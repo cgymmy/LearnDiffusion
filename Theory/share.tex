@@ -1,0 +1,377 @@
+\documentclass{ctexart}
+\usepackage{listings}                                           %插入代码
+\usepackage{geometry}                                           %设置页面大小边距等
+\usepackage{graphicx}                                           %插入图片
+\usepackage{amssymb}                                            %为了用\mathbb
+\usepackage{amsmath}                                            %数学方程的显示
+\usepackage{listings}                                           %插入代码
+\usepackage{fancyhdr}                                           %设置页眉页脚
+\usepackage{lastpage}                                           %总页数
+\usepackage{hyperref}                                           %引用网页
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{float}
+\usepackage{subcaption} 
+\usepackage{mathrsfs}
+
+
+
+\geometry{a4paper,left=2cm,right=2cm,top=2cm,bottom=2cm}        %一定要放在前面！
+\pagestyle{fancy}                                               %设置页眉页脚
+\lhead{Guanyu Chen}                                       %页眉左Fir                                        
+
+\rhead{Diffusion Model}                                                %章节信息
+\cfoot{\thepage/\pageref{LastPage}}                             %当前页，记得调用前文提到的宏包
+\lfoot{Zhejiang University}
+\rfoot{College Of Integrated Circuits}
+\renewcommand{\headrulewidth}{0.1mm}                            %页眉线宽，设为0可以去页眉线
+\renewcommand{\footrulewidth}{0.1mm}                            %页脚线宽，设为0可以去页眉线
+\setlength{\headwidth}{\textwidth}
+
+\hypersetup{                                                    %设置网页链接颜色等
+    colorlinks=true,                                            %链接将会有颜色，默认是红色
+    linkcolor=blue,                                             %内部链接，那些由交叉引用生成的链接将会变为蓝色（blue）
+    filecolor=magenta,                                          %链接到本地文件的链接将会变为洋红色（magenta）
+    urlcolor=blue,                                              %链接到网站的链接将会变为蓝绿色（cyan）
+}
+
+\lstset{  
+    basicstyle=\ttfamily,  
+    keywordstyle=\color{blue},  
+    language=Python,  
+    numbers=left,  
+    numberstyle=\tiny\color{gray},  
+    frame=single,  
+    breaklines=true  
+}  
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{proof}{Proof}
+\newtheorem{solution}{Solution:}
+\newtheorem{remark}{Remark}
+\newtheorem{definition}{Definition}
+\newtheorem{algorithm}{Algorithm}
+\newtheorem{lemma}{Lemma}
+
+\title{Theoretical Part of Diffusion Model}
+\date{\today}
+\begin{document}
+Here is the theoretical part of Diffusion Model. 
+\section{Langevin SDE}
+The Langevin SDE has the following form:
+\begin{equation}
+    X_{t + s} = X_t + \nabla \log p_t(x_t)s + \sqrt{2s}\xi
+\end{equation}
+where $X_t\in \mathcal{R}^d, p_t(x_t)=p(X_t=x_t)$, $\xi\sim N(0, I)$, $I$ is identical matrix of $m \times m$. Our goal is to sample from specific $p(x, t)$.
+
+\begin{theorem}
+    The density of Langevin Diffusion Model converges to $p(x)$ over time. In other words, if $X_t\sim p(x)$, then $X_{t+s}\sim p(x)$ for $\forall s>0$. 
+\end{theorem}
+\begin{proof}
+    Let  $\mu_{t}(f)=E\left[f\left(X_{t}\right)\right]$. Consider  $\mu_{t+\tau}(f)=E\left[f\left(X_{t+\tau}\right)\right]$, as $\tau \rightarrow 0$. Then  
+\begin{equation}
+    \begin{aligned}
+        \mu_{t+\tau}=&E\left[f\left(X_{t}+\nabla \log p_t\left(x_{t}\right) \cdot \tau+\sqrt{2 \tau} \xi\right)\right]\\
+        =&E\left[f\left(x_{t}\right)+\nabla^{\top} f\left(x_{t}\right)\left(\tau \nabla \log p_t\left(x_{t}\right)+\sqrt{2 \tau} \xi\right)\right. \\
+        &+\frac{1}{2}\left.\left(\nabla^{\top}\log p_t(x_t)\tau + \sqrt{2\tau}\xi\right)\nabla^2f(x_t)\nabla\log p_t(x_t)\tau + \sqrt{2\tau}\xi\right]\\
+        =&E\left[f\left(x_{t}\right)\right]+E\left[\tau \nabla^{\top}f\left(x_{t}\right) \nabla \log p_t\left(x_{t}\right)\right]\\
+        &+\frac{\tau^{2}}{2} E\left[\nabla^{\top} \log p\left(x_{t}\right) \cdot \nabla^{2} f\left(x_{t}\right) \cdot \nabla \log p\left(x_{t}\right)\right] +E\left[\tau \xi^{\top} \nabla^{2} f\left(x_{t}\right) \xi\right]
+    \end{aligned}
+\end{equation}
+ 
+The second term:
+\begin{equation}
+    \begin{aligned}
+        &\tau E\left[\nabla^{\top} f \cdot \nabla \log p_{t}\right] \\
+        =&\tau \int \nabla f \cdot \nabla \log p_{t} p_{t} d x=\tau \int \nabla f \cdot \nabla p_{t} d x \\
+        =&-\tau \int \operatorname{tr}\left(\nabla^{2} f\right) \cdot p_{t} d x=-\tau E\left[\operatorname{tr}\left(\nabla^{2} f\right)\right]\\
+        =&-\tau E\left[\xi^{\top} \nabla^{2} f \xi\right] \\
+    \end{aligned}
+\end{equation}
+Then 
+\begin{equation}
+    \mu_{t+\tau} =E\left[\frac{1}{2} \nabla^{\top} \log p_{t} \nabla^{2} f \nabla \log p_{t}\right] \cdot \tau^{2}=O\left(\tau^{2}\right)
+\end{equation}
+Hence we have $\frac{d}{dt}(\mu_t)=0$, i.e. $E[\mu_t]=E[\mu_{t+s}]$ for $\forall s>0$.
+\end{proof}
+
+\begin{remark}
+    We define the density of normal distribution $N(x ; \mu, \Sigma)$, and its log-density, gradient of density and score as follows:
+    \begin{equation}\left\{
+        \begin{aligned}
+            &N(x ; \mu, \Sigma)=\frac{1}{\sqrt{(2 \pi)^{d}|\Sigma|}} e^{-\frac{1}{2}(x-\mu)^{\top} \Sigma^{-1}(x-\mu)}\\
+            &\log N(x ; \mu, \Sigma)=-\frac{1}{2}(x-\mu)^{\top} \Sigma^{-1}(x-\mu)-\log \left(\sqrt{(2 \pi)^{d}|\Sigma|}\right) . \\
+            &\nabla_{x} N(x ; \mu, \Sigma)=N(x ; \mu, \Sigma)\Sigma^{-1}(x-\mu) \\
+            &\nabla_{x} \log N(x ; \mu, \Sigma)=-\Sigma^{-1}(x-\mu) .
+        \end{aligned}\right.
+    \end{equation}
+\end{remark}
+
+Actually, Langevin SDE is not necessary be as above i.e. the diffusion term is not necessary to be $\sqrt{2}$. The reason is to guarantee the stationary distribution of $p_t(x)$.
+i.e. the term $\frac{\partial p(x,t)}{\partial t}=0$ in FPK equation. If the diffusion term is $g(t)$, then by FPK equation, we have 
+$$\nabla_x\cdot(fp-\frac{1}{2}g^2(t)\nabla p)=0$$
+then $f(x,t) = \frac{1}{2}g^2(t)\frac{\nabla_x p(x, t)}{p(x,t)}=\frac{1}{2}g^2(t)\nabla_x\log p(x, t)$.
+
+\section{Linear SDE}
+Then we consider linear SDE having the form:
+\begin{equation}
+    dX_t = (a(t)X_t + b(t))dt + g(t)dW_t
+\end{equation}
+By Euler Maruyama method, it can be approximated By
+\begin{equation}
+    \begin{aligned}
+        X_{t+s}&=X_t + (a(t)X_t + b(t))s+g(t)\sqrt{s}\xi\\
+        &=(1+a(t)s)X_t + b(t)s + g(t)\sqrt{s}\xi
+    \end{aligned}
+\end{equation}
+where $\xi\sim N(0, 1)$. Usually we need to consider the expectation, variance and distribution of  x. But the stochastic value of x is dependent of $x_0$. Then first we consider
+\begin{equation}
+    \begin{aligned}
+    E\left[X_{t+s} | X_{0}\right]-E\left[X_{t} | X_{0}\right] & \approx\left(a(t) E\left[X_{t} | X_{t}\right]+b(t) s+g(t) \sqrt{s} E[\xi]\right. \\
+    & =\left(a(t) E\left[X_{t} | X_{0}\right]+b(t)\right) s .
+    \end{aligned}
+\end{equation}
+
+
+Note  $e(t)=E\left[X_{t} | X_{0}\right]$, then
+\begin{equation}
+    e^{\prime}(t)=\lim _{s \rightarrow 0} \frac{E\left[X_{t+s} | X_{0}\right]-E\left[X_{t} | X_{0}\right]}{s}=a(t) \cdot e(t)+b(t) . \quad e(0)=X_{0} .    
+\end{equation}
+which is an ODE system, having solution
+\begin{equation}
+    e(t)=\left(X_{0}+\int_{0}^{t} e^{-\int_{0}^{s} a(r) d r} b(s) d s\right) \cdot e^{\int_{0}^{t} a(s) d s}
+\end{equation}
+Therefore
+\begin{equation}
+    \begin{aligned}
+    E\left[X_{t}\right] & =E\left[E\left[X_{t} | X_{0}\right]\right]=E[e(t)] \\
+    & =\left(E\left[X_{0}\right]+\int_{0}^{t} e^{-\int_{0}^{s} a(r) d r} b(s) d s\right) e^{\int_{0}^{t} a(s) d s}
+    \end{aligned}
+\end{equation}
+
+Similarly, Note $\operatorname{Var}\left(X_{0} | X_{0}\right)=v(t)$:
+then $\operatorname{Var}\left(X_{t+s} | X_{0}\right)=(1+s a(t))^{2} \operatorname{Var}\left(X_{t} | X_{0}\right)+s g^{2}(t)$. Then
+\begin{equation}
+    \begin{aligned}
+        V^{\prime}(t)&=\lim _{s \rightarrow 0} \frac{\operatorname{Var}\left(X_{t+s} | X_{0}\right)-\operatorname{Var}\left(X_{t} | X_{0}\right)}{s}\\
+        =&\left[\left(a^{2}(t) s+2 a(t)\right) v(t)+g^{2}(t)\right]|_{s \rightarrow 0}\\ 
+        =&2 \alpha(t) V(t)+g^{2}(t), \qquad V(0)=0
+    \end{aligned}
+\end{equation}
+Solution is:
+\begin{equation}
+    v(t)=\left(\int_{0}^{t} e^{-\int_{0}^{s} 2 a(r) d r} g^{2}(s) d s\right)
+\end{equation}
+By law of total variance
+\begin{equation}
+    \begin{aligned}
+        \operatorname{Var}\left(X_{t}\right)=&E\left[X_{t}^{2}\right]-E^{2}\left[X_{t}\right]=E\left[ E\left[X_{t}^{2} | X_{0}\right]\right]-E^{2}\left[X_{t}\right] \\
+        =&E\left[\operatorname{Var}\left(X_{t} | X_{0}\right)+E^{2}\left[X_{t} | X_{0}\right]\right]-E^{2}\left[X_{t}\right] \\
+        =&E\left[\operatorname{Var}\left(X_{t} | X_{0}\right)\right]+E\left[E^{2}\left[X_{t} | X_0\right]\right]-E^{2}\left[E\left[X_{t} | X_{0}\right]\right]\\
+        =&E\left[\operatorname{Var}\left(X_{t} | X_{0}\right)\right]+\operatorname{Var}\left(E\left[X_{t} | X_0\right)\right)
+    \end{aligned}
+\end{equation}
+then 
+\begin{equation}
+    \begin{aligned}
+        \operatorname{Var}=&E[V(t)]+\operatorname{Var}(e(t))\\
+        =&\left(\int_{0}^{t} e^{-\int_{0}^{s} 2 a(r) d r} g^{2}(s) d s\right) e^{\int_{0}^{t} 2 a(s) d s}+e^{\int_{0}^{t} 2 a(s) d s} \cdot \operatorname{Var}\left(X_{0}\right) .
+    \end{aligned}
+\end{equation}
+
+We have the following theorem which is crucial for diffusion models.
+\begin{theorem}\label{thm1}
+    If  $X_{t+s}=(1+a(t) s) X_{t}+b(t) s+g(t) \sqrt{s} \xi$\\
+    then $X_{t} | X_{0} \sim N\left(E\left[X_{t} | X_{0}\right], \operatorname{Var}\left(X_{t} | X_{0}\right)\right)$, 
+    where $\left(E\left[X_{t} | X_{0}\right]=e(t), \operatorname{Var}\left(X_{t} | X_{0}\right)=V(t)\right)$.        
+\end{theorem}
+
+Next, we will see how the above formula can be applied to diffusion modtels. There are three frameworks to build SDEs for diffusion models, VP, VE and sub-VP.
+\begin{definition}
+    Noise function  $\beta(t)$ . s.t. $\beta(0)=0 ; \beta^{\prime}(t) \geqslant 0 ; \beta(t) \rightarrow \infty \text { as } t \rightarrow \infty$
+\end{definition}
+
+\subsection{Variance Preserving (VP) SDE}
+So if we have diffusion model like:
+\begin{equation}
+\begin{aligned}
+    X_{t_{i+1}}&=\sqrt{1-\left(\beta\left(t_{i+1}\right)-\beta\left(t_{i}\right)\right)}X_{t_i}+\sqrt{\left(\beta\left(t_{i+1}\right)-\beta\left(t_{i}\right)\right)}\xi\\
+    &=\sqrt{1-\Delta\beta(t_i)}X_{t_i}+\sqrt{\Delta \beta(t_i)}\xi
+\end{aligned}
+\end{equation}
+Then the conditional distribution is given by:
+\begin{equation}
+    q\left(X_{t_{i+1}} | X_{t_{i}}\right)=N(x_{t_{i+1}} ; \sqrt{1-\Delta \beta\left(t_{i}\right)}X_{t_i}, \Delta \beta\left(t_{i}\right))
+\end{equation}
+Then we need to estimate  $\theta$  drift term  $f$  and diffusion term  $g$:
+
+\begin{equation}
+    \begin{aligned}
+        f(x, t)&=\lim _{h \rightarrow 0} \frac{E\left[X_{t+h}-X_{t} | X_{t}=x\right]}{h} \\
+            &=\lim _{h \rightarrow 0} \frac{x \sqrt{1-\Delta \beta(t)}-x}{h}=-\frac{x}{2} \beta^{\prime}(t) . \\
+    g(t) &= \sqrt{\lim _{h \rightarrow 0} \frac{N\left[X_{t+h} | X_{t}=x\right]}{h}}=\sqrt{\lim _{h \rightarrow 0} \frac{\beta(t+h)-\beta(t)}{h}}=\sqrt{\beta^{\prime}(t)}
+    \end{aligned}
+\end{equation}
+Then the model can be written as
+$d x=-\frac{x}{2} \beta^{\prime}(t) d t+\sqrt{\beta^{\prime}(t)} d W_{t}$
+
+
+Then by Theorem \ref{thm1} we have
+\begin{equation}
+    \left\{\begin{aligned}
+    &E\left[X_{t} | X_{0}\right]=X_{0} e^{\int_{0}^{t}-\frac{1}{2} \beta'(s) d s}=X_{0} e^{-\frac{1}{2} \beta(t)} \\
+    &E\left[X_{t}\right]=E\left[X_{0}\right] e^{-\frac{1}{2} \beta(t)} \\
+    &V\left(X_{t} | X_{0}\right)=\int_{0}^{t} e^{\int_{0}^{s} \beta^{\prime}(r) d r} \beta^{\prime}(s) d s \cdot e^{-\beta(t)}=1-e^{-\beta(t)} \\
+    &V\left(X_{t}\right)=1-e^{-\beta(t)}+V\left(X_{0}\right) e^{-\beta(t)}=1+\left(V\left(X_{0}\right)-1\right) e^{-\beta(t)} .
+    \end{aligned}\right.
+\end{equation}
+So as  $t \rightarrow \infty,\beta(t) \rightarrow \infty$, then  $E \rightarrow 0, V \rightarrow 1$, i.e. 
+$X_{t} | X_{0} \sim N\left(E\left[X_{t} | X_{0}\right], \operatorname{Var}\left|X_{t}\right| X_{0}\right)\rightarrow N(0,1) \text{ as } t \rightarrow \infty$.
+ 
+\subsection{Variance-Exploding SDE}
+Here is the model: 
+$X_{t+h}=X_{t}+\sqrt{\Delta \beta(t)} \xi$
+
+Similarly we can compute the $f(x, t)\equiv 0$ and $g(t)=\sqrt{\beta(t)}$.
+Hence  
+\begin{equation}\left\{
+    \begin{aligned}
+        &E\left[X_{0} | X_{0}\right]=X_{0}\\
+        &E\left[X_{t}\right]=E\left[X_{0}\right] \\ 
+        &V\left(X_{t} | X_{0}\right)=\int_{0}^{t} e^{\int_{0}^{s} 0 d r} \beta^{\prime}(s) d s=\beta(t)\\ 
+        &V\left(X_{t}\right)=V\left[X_{0}\right]+\beta(t)
+    \end{aligned}\right.
+\end{equation}
+
+So the expectation value is constant and the variance is increasing monotonical. \\
+If we rescale  $X_{t}$ as $Y_{t}=\frac{X_{t}}{\sqrt{\beta(t)}}$, then $Y_t \rightarrow N(0,1), t \rightarrow \infty$.
+
+\subsection{Sub-VP SPE}
+Here, we set the dift and diffusion term as
+\begin{equation}
+\begin{aligned}
+        &f(x, t)=-\frac{1}{2} \beta^{\prime}(t) \\
+        &g(t)=\sqrt{\beta^{\prime}(t)\left(1-e^{-2 \beta(t)}\right)}
+\end{aligned}
+\end{equation}
+As the same, we can compute that.
+\begin{equation}
+    \left\{\begin{aligned}
+    &E\left[X_{t} | X_{0}\right]=X_{0} e^{-\frac{1}{2} \beta(t)} \\
+    &E\left[X_{t}\right]=E\left[X_{0}\right] e^{-\frac{1}{2} \beta(t)} \\
+    &V\left(X_{t} | X_{0}\right)=\left(1-e^{-\beta(t)}\right)^{2} \\
+    &V\left(X_{t}\right)=\left(1-e^{-\beta(t)}\right)^{2}+V\left(X_{t}\right) e^{-\beta(t)} .
+    \end{aligned}\right.
+\end{equation}
+
+We can find out that the variance is always smaller thar VP SDE.
+
+\begin{remark}
+    To sum up, finally we hope that $X_t$ converges to a normal distribution by choosing different drift and diffusion functions. 
+    For generative model, the goal is to sample from a Data distribution $p_{data}$. We have known that if we set the initial distribution $p_0(x_0)=p(X_0=x_0)\sim p_{data}$, 
+    then after $t=T$, the distribution of $X_t$ is tend to be $N(0, 1)$ under certain conditions. 
+    
+    So the idea is backward: if we sample from $X_T\sim N(0, 1)$, and then run SDE backwards, could we get the initial distribution?
+\end{remark}
+
+\section{Reverse SDE}
+Assume we have forward SDE: from $X_0\sim p_0,X_T\sim p_T$,
+\begin{equation}\label{forward}
+    dX_t = f(X_t, t)dt + g(t)dW_t
+\end{equation}
+Then we define the reverse SDE as: from $X_T\sim p_T$,
+\begin{equation}
+    d\bar{X_t}=\bar{f}(\bar{X}_t, t)dt + \bar{g}(t)d\bar{W_t}
+\end{equation}
+where $\bar{W}_t$ is Brownian Motion runns backward in time, i.e. $\bar{W}_{t-s}-\bar{W}_t$ is independent of $\bar{W}_t$. We can approximate by EM:
+\begin{equation}
+    \bar{X}_{t-s}-\bar{X}_t=-s\bar{f}(\bar{X}_t, t) + \sqrt{s}\bar{g}(t)\xi
+\end{equation}
+So the problem is: If given $f,g$, are there $\bar{f},\bar{g}$ s.t. the reverse time diffusion process $\bar{X}_t$ has the same distribution as the forward process $X_t$? Yes!
+\begin{theorem}
+    The reverse SDE with $\bar{f},\bar{g}$ having the following form has the same distribution as the forward SDE \ref{forward}:
+    \begin{equation}\left\{
+        \begin{aligned}
+            &\bar{f}(x,t)=f(x,t)-g^2(x,t)\frac{\partial}{\partial x}\log p_t(x)\\
+            &\bar{g}=g(t)
+        \end{aligned}\right.
+    \end{equation}
+    i.e. 
+    \begin{equation}
+        d\bar{X}_t = \left[f(\bar{X}_t, t)-g^2(t)\log p_t(x_t)\right]dt+g(t)d\bar{W}_t
+    \end{equation}
+\end{theorem}
+\begin{proof}
+    The proof is skipped.
+\end{proof}
+This theroem allows us to learn how to generate samples from $p_{data}$.
+\begin{algorithm}:\\
+Step1. Select $f(x, t)$ and $g(t)$ with affine drift coefficients s.t. $X_T\sim N(0, 1)$\\
+Step2. Train a network $s_\theta(x, t)=\frac{\partial}{\partial x}\log p_t(x)$ where $p_t(x)=p(X_t=x)$ is the forward distribution.\\
+Step3. Sample $X_T$ from $N(0, 1)$, then run reverse SDE from T to 0:
+\begin{equation}
+    \bar{X}_{t-s} = \bar{X}_t + s\left[g^2(t)s_\theta(\bar{X}_t, t)-f(\bar{X}_t, t)\right] + \sqrt{s}g(t)\xi
+\end{equation}
+\end{algorithm}
+
+\section{Loss function}
+Normally we can define the loss function as follows:
+\begin{equation}
+    \begin{aligned}
+        L_\theta & = \frac{1}{T}\int_0^T\lambda(t)\underset{x_0\sim p_{data}}{E}\left[\underset{x_t\sim p_{t|0}(x_t|x_0)}{E}\left[\|s_\theta(x_t, t)-\nabla_{x_t}\log p_t(x_t)\|^2\right]\right]dt\\
+        &=\underset{t\sim U(0, T)}{E}\left[\lambda(t)\underset{x_0\sim p_{data}}{E}\left[\underset{x_t\sim p_{t|0}(x_t|x_0)}{E}\left[\|s_\theta(x_t, t)-\nabla_{x_t}\log p_t(x_t)\|^2\right]\right]\right]
+    \end{aligned}
+\end{equation}
+It should be clearified that $p_{t|0}(x_t|x_0)=p(X_t=x_t|X_0=x_0)$. So $$p_t(x_t)=\int p_{t|0}(x_t|x_0)p_0(x_0)dx_0=E_{x0\sim p_{data}}\left[p_{t|0}(x_t|x_0)\right]$$.
+Then $p_{t}(x)=p\left(X_{t}=x\right) . \quad p_{t | 0}(x | y)=p\left(X_{t}=x | x_{0}=y\right)$.
+
+\begin{equation}
+    \begin{aligned}
+    \nabla \log p_{t}(x) & =\frac{1}{p_{t}(x)} \nabla p_{t}(x) . \\
+    & =\frac{1}{p_{t}(x)} \nabla \int p_{t | 0}(x | y) p_{0}(y) d y \\
+    & =\frac{1}{p_{t}(x)} \int \nabla p_{t | 0}(x | y) p_{0}(y) d y \\
+    & =\frac{1}{p_{t}(x)} \int \frac{\nabla p_{t | 0}(x | y)}{p_{t | 0}(x | y)} p_{0}(y) \cdot p_{t | 0}(x | y) d y \\
+    & =\int \nabla_{x} \log \left(p_{t | 0}(x | y)\right) \cdot p_{0 | t}(y | x) d y \\
+    & =E_{y}\left[\nabla_{x} \log \left(p_{t | 0}(x | y)\right)\right]
+    \end{aligned}
+\end{equation}
+
+
+\begin{lemma}
+    If  $y \sim p_{0 | t}(y | x), x \sim p_{t}(x)$, then  $y \sim p_{0}(y)$
+\end{lemma}
+\begin{proof}
+    \begin{equation}
+        \begin{aligned}
+            p\left(x_{0}=y | x_{t}=x\right) & =\int p\left(x_{0}=y | x_{t}=x\right) p\left(x_{t}=x\right) d x=\int p\left(x_{t}=x | x_{0}=y\right) p\left(x_{0}=y\right) d x . \\
+            & =p\left(x_{0}=y\right)=p_{\text {data }}(y)
+        \end{aligned}
+    \end{equation}
+\end{proof}
+Then we can rewrite the loss function as:
+\begin{equation}
+    \begin{aligned}
+        L_{\theta}&=\underset{t\sim U(0,T)}{E}\left[\lambda(t) \underset{x_{0}\sim p_{data}}{E}\left[\underset{x_{t}\sim p_{t|0}(x_t|x_0)}{E}\left[\left\|S_{\theta}\left(x_{t}, t\right)-\frac{\partial}{\partial x_{t}} \log p_{t}\left(x_{t}\right)\right\|^{2}\right]\right.\right.\\ 
+        &\leqslant \underset{t\sim U(0,T)}{E}\left[\lambda(t) \underset{x_{0}\sim p_{data}}{E}\left[\underset{x_{t}\sim p_{t|0}(x_t|x_0)}{E}\left[\underset{y\sim p_{data}}{E}\left[\left\|S_{\theta}\left(x_{t}, t\right)-\nabla_{x_{t}} \log p_{t|0}(x | y)\right\|^{2}\right]\right]\right]\right] \\
+        &=\underset{t\sim U(0, T)}{E}\left[\lambda(t) \underset{x_{0}\sim p_{data}}{E}\left[\underset{x_{t}\sim p_{t|0}(x_t|x_0)}{E}\left[\| S_{\theta}\left(x_{t}, t\right)-\nabla_{x_{t}} \log \left(p_{t|0}\left(x_{t} | x_{0}\right) \|^{2}\right]\right]\right]\right.
+    \end{aligned}
+\end{equation}
+
+
+Since  $p_{t|0}\left(X_{t} | x_{0}\right)=p\left(X_{t}=x_{t} | X_{0}=x_{0}\right)$  has been discussed:
+
+$$p_{t | 0}\left(x_{t} | x_{0}\right) \sim N\left(x_{t} ; E\left[X_{t}=x_t | X_{0}=x_{0}\right], \operatorname{Var}\left(X_{t}=x_t | X_{0}=x_{0}\right)\right) .$$
+
+Then by theorem \ref{thm1}
+\begin{equation}
+    \frac{\partial}{\partial x} \log p_{t | 0}\left(x | x_{0}\right)=-\frac{x-E_{t | 0}\left[x | x_{0}\right]}{\operatorname{Var}_{t | 0}\left(x | x_{0}\right)}=-\frac{x-e(t)}{V(t)}
+\end{equation}
+So
+\begin{equation}
+\begin{aligned}
+    L_\theta=&\underset{t\sim U(0,T)}{E}\left[\lambda (t)\underset{x_0\sim p_{data}}{E}\left[\underset{\xi\sim N(0, 1)}{E}\left[\left\|s_\theta\left(\sqrt{\operatorname{Var}_{t|0}(x_t|x_0)}\xi+E_{t|0}[x_t|x_0], t\right) + \frac{\xi}{\sqrt{\operatorname{Var}_{t|0}(x_t|x_0)}}\right\|^2\right]\right]\right]\\
+    =&\underset{t\sim U(0,T)}{E}\left[\lambda (t)\underset{x_0\sim p_{data}}{E}\left[\frac{1}{\operatorname{Var}_{t|0}(x_t|x_0)}\underset{\xi\sim N(0, 1)}{E}\left[\left\|\xi_\theta\left(\sqrt{\operatorname{Var}_{t|0}(x_t|x_0)}\xi+E_{t|0}[x_t|x_0], t\right)-\xi\right\|^2\right]\right]\right]
+\end{aligned}    
+\end{equation}
+where $\xi_\theta = -s_\theta\sqrt{\operatorname{Var}_{t|0}(x_t|x_0)}$ is called denoising network.
+\end{document} 
