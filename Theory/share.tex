@@ -82,7 +82,7 @@ where $X_t\in \mathcal{R}^d, p_t(x_t)=p(X_t=x_t)$, $\xi\sim N(0, I)$, $I$ is ide
 The second term:
 \begin{equation}
     \begin{aligned}
-        &\tau E\left[\nabla^{\top} f \cdot \nabla \log p_{t}\right] \\
+        &\tau E\left[\nabla^{\top} f \nabla \log p_{t}\right] \\
         =&\tau \int \nabla f \cdot \nabla \log p_{t} p_{t} d x=\tau \int \nabla f \cdot \nabla p_{t} d x \\
         =&-\tau \int \operatorname{tr}\left(\nabla^{2} f\right) \cdot p_{t} d x=-\tau E\left[\operatorname{tr}\left(\nabla^{2} f\right)\right]\\
         =&-\tau E\left[\xi^{\top} \nabla^{2} f \xi\right] \\
