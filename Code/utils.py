@@ -280,3 +280,49 @@ def run_backwards(model: torch.nn.Module, sde: VPSDE, X_0: torch.Tensor, device,
             axs[row, col].set_title(f"Step={idx}")
     output = torch.stack(x_traj)
     return output, time_grid
+
+def run_backwards_pics(model: torch.nn.Module, sde: VPSDE, X_0: torch.Tensor, 
+                       device, cond_grad_func: callable, train_score: bool=False, n_steps: int=10, 
+                       plot_evolution: bool=False, target: int=None):
+    model = model.to(device)
+    n_traj = X_0.shape[0]
+    time_grid = torch.linspace(sde.T_max, 0, n_steps)
+    dt = torch.abs(time_grid[0] - time_grid[1])
+    diffusion_g = sde.g_random(t=time_grid)
+    noise = torch.randn(size=(n_steps, *list(X_0.shape)))
+    diffusion_term_grid = mult_first_dim(noise, torch.sqrt(dt) * diffusion_g)
+    x_traj = [X_0]
+    if plot_evolution:
+        n_col = len(time_grid)//2
+        fig, axs = plt.subplots(2, n_col,figsize=(12*n_col, 24))
+    for idx, t in enumerate(time_grid):
+        x = x_traj[idx]
+        t = t.repeat(n_traj)
+        drift_term = sde.f_drift(x, t) * dt
+        diffusion_term = diffusion_term_grid[idx]
+        model_estimate = model(x.to(device), t.to(device)).detach().to('cpu')
+        if train_score:
+            score_estimates = model_estimate
+        else:
+            denominator = torch.clip(sde.cond_std(None, t), 0.01)
+            score_estimates = -mult_first_dim(model_estimate, 1/denominator)
+        g_squared = (diffusion_g[idx] ** 2).repeat(n_traj)
+        
+        correction_term = dt * mult_first_dim(score_estimates, g_squared)
+        change = (correction_term - drift_term) + diffusion_term
+        if cond_grad_func is not None:
+            cond_grad = cond_grad_func(x.to(device), t.to(device), target).to(change.device)
+            cond_grad = dt * mult_first_dim(cond_grad, g_squared)
+            change += cond_grad
+        x_next = x + change
+        x_traj.append(x_next)
+        if plot_evolution:
+            row = idx // n_col
+            col = idx % n_col
+            axs[row, col].scatter(x_next[:,0], x_next[:,1])
+            axs[row, col].quiver(x_next[:,0], x_next[:,1], change[:,0],change[:,1])
+            axs[row, col].set_xlim(-2.0,2.0)
+            axs[row, col].set_ylim(-2.0,2.0)
+            axs[row, col].set_title(f"Step={idx}")
+    output = torch.stack(x_traj)
+    return output, time_grid
