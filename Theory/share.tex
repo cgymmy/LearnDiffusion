@@ -186,6 +186,8 @@ We have the following theorem which is crucial for diffusion models.
     where $\left(E\left[X_{t} | X_{0}\right]=e(t), \operatorname{Var}\left(X_{t} | X_{0}\right)=V(t)\right)$.        
 \end{theorem}
 
+It should be noted that $e(t)$ is related to $X_0$ and t, while $V(t)$ only depends on $t$!
+
 Next, we will see how the above formula can be applied to diffusion modtels. There are three frameworks to build SDEs for diffusion models, VP, VE and sub-VP.
 \begin{definition}
     Noise function  $\beta(t)$ . s.t. $\beta(0)=0 ; \beta^{\prime}(t) \geqslant 0 ; \beta(t) \rightarrow \infty \text { as } t \rightarrow \infty$
@@ -322,7 +324,7 @@ Normally we can define the loss function as follows:
         &=\underset{t\sim U(0, T)}{E}\left[\lambda(t)\underset{x_0\sim p_{data}}{E}\left[\underset{x_t\sim p_{t|0}(x_t|x_0)}{E}\left[\|s_\theta(x_t, t)-\nabla_{x_t}\log p_t(x_t)\|^2\right]\right]\right]
     \end{aligned}
 \end{equation}
-It should be clearified that $p_{t|0}(x_t|x_0)=p(X_t=x_t|X_0=x_0)$. So $$p_t(x_t)=\int p_{t|0}(x_t|x_0)p_0(x_0)dx_0=E_{x0\sim p_{data}}\left[p_{t|0}(x_t|x_0)\right]$$.
+It should be clearified that $p_{t|0}(x_t|x_0)=p(X_t=x_t|X_0=x_0)$. So $$p_t(x_t)=\int p_{t|0}(x_t|x_0)p_0(x_0)dx_0=E_{x_0\sim p_{data}}\left[p_{t|0}(x_t|x_0)\right]$$.
 Then $p_{t}(x)=p\left(X_{t}=x\right) . \quad p_{t | 0}(x | y)=p\left(X_{t}=x | x_{0}=y\right)$.
 
 \begin{equation}
@@ -332,46 +334,69 @@ Then $p_{t}(x)=p\left(X_{t}=x\right) . \quad p_{t | 0}(x | y)=p\left(X_{t}=x | x
     & =\frac{1}{p_{t}(x)} \int \nabla p_{t | 0}(x | y) p_{0}(y) d y \\
     & =\frac{1}{p_{t}(x)} \int \frac{\nabla p_{t | 0}(x | y)}{p_{t | 0}(x | y)} p_{0}(y) \cdot p_{t | 0}(x | y) d y \\
     & =\int \nabla_{x} \log \left(p_{t | 0}(x | y)\right) \cdot p_{0 | t}(y | x) d y \\
-    & =E_{y}\left[\nabla_{x} \log \left(p_{t | 0}(x | y)\right)\right]
+    & =\underset{y\sim p_{0|t}(y|x)}{E}\left[\nabla_{x} \log \left(p_{t | 0}(x | y)\right)\right]
     \end{aligned}
 \end{equation}
 
-
+Where we have used the following lemma:
 \begin{lemma}
-    If  $y \sim p_{0 | t}(y | x), x \sim p_{t}(x)$, then  $y \sim p_{0}(y)$
+    \begin{equation}
+        \underset{x_0\sim p_0}{E}\left[\underset{x_t\sim p_{t|0}(\cdot|x_0)}{E}\left[\underset{x'_0\sim p_{0|t}(\cdot|x_t)}{E}\left[f(x_t, x'_0)\right]\right]\right]=\underset{x_0\sim p_0}{E}\left[\underset{x_t\sim p_{t|0}(\cdot|x_0)}{E}\left[f(x_t, x_0)\right]\right]
+    \end{equation}
 \end{lemma}
 \begin{proof}
-    \begin{equation}
-        \begin{aligned}
-            p\left(x_{0}=y | x_{t}=x\right) & =\int p\left(x_{0}=y | x_{t}=x\right) p\left(x_{t}=x\right) d x=\int p\left(x_{t}=x | x_{0}=y\right) p\left(x_{0}=y\right) d x . \\
-            & =p\left(x_{0}=y\right)=p_{\text {data }}(y)
-        \end{aligned}
-    \end{equation}
+    Easy to prove.
 \end{proof}
 Then we can rewrite the loss function as:
 \begin{equation}
     \begin{aligned}
         L_{\theta}&=\underset{t\sim U(0,T)}{E}\left[\lambda(t) \underset{x_{0}\sim p_{data}}{E}\left[\underset{x_{t}\sim p_{t|0}(x_t|x_0)}{E}\left[\left\|S_{\theta}\left(x_{t}, t\right)-\frac{\partial}{\partial x_{t}} \log p_{t}\left(x_{t}\right)\right\|^{2}\right]\right.\right.\\ 
-        &\leqslant \underset{t\sim U(0,T)}{E}\left[\lambda(t) \underset{x_{0}\sim p_{data}}{E}\left[\underset{x_{t}\sim p_{t|0}(x_t|x_0)}{E}\left[\underset{y\sim p_{data}}{E}\left[\left\|S_{\theta}\left(x_{t}, t\right)-\nabla_{x_{t}} \log p_{t|0}(x | y)\right\|^{2}\right]\right]\right]\right] \\
+        &\leqslant \underset{t\sim U(0,T)}{E}\left[\lambda(t) \underset{x_{0}\sim p_{data}}{E}\left[\underset{x_{t}\sim p_{t|0}(x_t|x_0)}{E}\left[\underset{y\sim p_{data}}{E}\left[\left\|S_{\theta}\left(x_{t}, t\right)-\nabla_{x_{t}} \log \left(p_{t|0}(x_t | y)\right)\right\|^{2}\right]\right]\right]\right] \\
         &=\underset{t\sim U(0, T)}{E}\left[\lambda(t) \underset{x_{0}\sim p_{data}}{E}\left[\underset{x_{t}\sim p_{t|0}(x_t|x_0)}{E}\left[\| S_{\theta}\left(x_{t}, t\right)-\nabla_{x_{t}} \log \left(p_{t|0}\left(x_{t} | x_{0}\right) \|^{2}\right]\right]\right]\right.
     \end{aligned}
 \end{equation}
 
 
-Since  $p_{t|0}\left(X_{t} | x_{0}\right)=p\left(X_{t}=x_{t} | X_{0}=x_{0}\right)$  has been discussed:
+Since  $p_{t|0}\left(x_{t} | x_{0}\right)=p\left(X_{t}=x_{t} | X_{0}=x_{0}\right)$  has been discussed:
 
 $$p_{t | 0}\left(x_{t} | x_{0}\right) \sim N\left(x_{t} ; E\left[X_{t}=x_t | X_{0}=x_{0}\right], \operatorname{Var}\left(X_{t}=x_t | X_{0}=x_{0}\right)\right) .$$
 
-Then by theorem \ref{thm1}
+Then by theorem \ref{thm1}, x can be written as $x=e(t, X_0)+\sqrt{V(t)}\xi$, where $\xi\sim N(0, 1)$, then the score function is:
 \begin{equation}
-    \frac{\partial}{\partial x} \log p_{t | 0}\left(x | x_{0}\right)=-\frac{x-E_{t | 0}\left[x | x_{0}\right]}{\operatorname{Var}_{t | 0}\left(x | x_{0}\right)}=-\frac{x-e(t)}{V(t)}
+    \frac{\partial}{\partial x} \log p_{t | 0}\left(x | x_{0}\right)=-\frac{x-E_{t | 0}\left[x | x_{0}\right]}{\operatorname{Var}_{t | 0}\left(x | x_{0}\right)}=-\frac{x-e(t, X_0)}{V(t)}\sim -N\left(0, \frac{1}{V(t)}\right)
 \end{equation}
 So
 \begin{equation}
 \begin{aligned}
-    L_\theta=&\underset{t\sim U(0,T)}{E}\left[\lambda (t)\underset{x_0\sim p_{data}}{E}\left[\underset{\xi\sim N(0, 1)}{E}\left[\left\|s_\theta\left(\sqrt{\operatorname{Var}_{t|0}(x_t|x_0)}\xi+E_{t|0}[x_t|x_0], t\right) + \frac{\xi}{\sqrt{\operatorname{Var}_{t|0}(x_t|x_0)}}\right\|^2\right]\right]\right]\\
-    =&\underset{t\sim U(0,T)}{E}\left[\lambda (t)\underset{x_0\sim p_{data}}{E}\left[\frac{1}{\operatorname{Var}_{t|0}(x_t|x_0)}\underset{\xi\sim N(0, 1)}{E}\left[\left\|\xi_\theta\left(\sqrt{\operatorname{Var}_{t|0}(x_t|x_0)}\xi+E_{t|0}[x_t|x_0], t\right)-\xi\right\|^2\right]\right]\right]
+    L_\theta=&\underset{t\sim U(0,T)}{E}\left[\lambda (t)\underset{x_0\sim p_{data}}{E}\left[\underset{\xi\sim N(0, 1)}{E}\left[\left\|s_\theta\left(\sqrt{V(t)}\xi+e(t, X_0), t\right) + \frac{\xi}{\sqrt{V(t)}}\right\|^2\right]\right]\right]\\
+    =&\underset{t\sim U(0,T)}{E}\left[\lambda (t)\underset{x_0\sim p_{data}}{E}\left[\frac{1}{V(t)}\underset{\xi\sim N(0, 1)}{E}\left[\left\|\xi_\theta\left(\sqrt{V(t)}\xi+e(t, X_0), t\right)-\xi\right\|^2\right]\right]\right]
 \end{aligned}    
 \end{equation}
-where $\xi_\theta = -s_\theta\sqrt{\operatorname{Var}_{t|0}(x_t|x_0)}$ is called denoising network.
+where $\xi_\theta = -\sqrt{V(t)}s_\theta$ is called denoising network.
+
+\section{With Classifier}
+Though we can produce pictures by sampling from normal distribution, we still cannot control what we will generate. What we want to do is something like:
+"Give me the pictures of number 6", then the model can sample from the normal distribution and do the denoising to generate pics of 6. 
+
+Usually, we can do something like: train a model for every class label. This do make the model smaller, but increases number of models. 
+Think about it, when the label is TEXT, it is impossiable to train a model for each sentences. 
+
+So, the initial distribution is $p_0(x|y)$ given the label y. Similarly, we will convert the data distribution $p_{data}(x|y)$ to final distribution, normal distribution expected.
+Then we SDE becomes: $X_t \sim p_t(x|y)$
+
+
+\begin{equation}
+    \begin{aligned}
+    & P_{t}(x \mid y)=P\left(X_{t}=x \mid y\right)=\frac{P\left(y \mid X_{t}=x\right) P\left(X_{t}=x\right)}{P(y)} \\
+    \Rightarrow & \log \left(P_{t}(x \mid y)\right)=\log \left(P\left(y \mid X_{t}=x\right)\right)+\log \left(P\left(X_{t}=x\right)\right)-\log (P(y)) \\
+    \Rightarrow & \nabla_{x} \log \left(P_{t}(x \mid y)\right)=\nabla_{x} \log \left(P\left(y \mid X_{t}=x\right)\right)+\nabla_{x} \log \left(P\left(X_{t}=x\right)\right)
+    \end{aligned}
+\end{equation}
+    
+    
+We have finished training  $\nabla_{x} \log \left(p\left(X_{t}=x\right)\right)$  in sampling. Then we need to estimate  $\nabla_{x} \log \left(p\left(y \mid X_{t}=x\right)\right)$. This is the conditional protability, we end up with a sharp factor s: $P^{\prime}\left(y \mid X_{t}=x\right)$ , then:
+\begin{equation}
+    \nabla_{x} \log \left(p_{t}(x \mid y)\right)=S \nabla_{x} \log \left(p\left(y \mid x_{t}=x\right)\right)+\nabla_{x} \log \left(p\left(x_{t}=x\right)\right)
+\end{equation}
+Note  $\omega_{\theta}(y \mid x, t)$  to learn  $s \nabla_{x} \log \left(p\left(y \mid X_{t}=x\right)\right)$ 
 \end{document} 
