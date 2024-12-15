@@ -1,4 +1,4 @@
-\documentclass{ctexart}
+\documentclass{article}
 \usepackage{listings}                                           %插入代码
 \usepackage{geometry}                                           %设置页面大小边距等
 \usepackage{graphicx}                                           %插入图片
@@ -54,8 +54,12 @@
 \newtheorem{lemma}{Lemma}
 
 \title{Theoretical Part of Diffusion Model}
+\author{Guanyu Chen}
 \date{\today}
 \begin{document}
+\maketitle
+\tableofcontents
+\newpage
 Here is the theoretical part of Diffusion Model. 
 \section{Langevin SDE}
 The Langevin SDE has the following form:
@@ -117,17 +121,18 @@ Then we consider linear SDE having the form:
 \begin{equation}
     dX_t = (a(t)X_t + b(t))dt + g(t)dW_t
 \end{equation}
+where $X_t\in \mathcal{R}^d, W_t\in \mathcal{R}^m$ with diffusion factor $Q\in \mathcal{R}^{m\times m}$, then $a(t)\in \mathcal{R}^{d\times d}, b(t)\in \mathcal{R}^d, g(t)\in \mathcal{R}^{d\times m}$. 
 By Euler Maruyama method, it can be approximated By
 \begin{equation}
     \begin{aligned}
-        X_{t+s}&=X_t + (a(t)X_t + b(t))s+g(t)\sqrt{s}\xi\\
-        &=(1+a(t)s)X_t + b(t)s + g(t)\sqrt{s}\xi
+        X_{t+s}&=X_t + (a(t)X_t + b(t))s+g(t)\sqrt{sQ}\xi\\
+        &=(1+a(t)s)X_t + b(t)s + g(t)\sqrt{sQ}\xi
     \end{aligned}
 \end{equation}
-where $\xi\sim N(0, 1)$. Usually we need to consider the expectation, variance and distribution of  x. But the stochastic value of x is dependent of $x_0$. Then first we consider
+where $\xi\sim N(0, I_m)$. Usually we need to consider the expectation, variance and distribution of $X_t$. But the stochastic value of $X_t$ is dependent of $x_0$. Then first we consider
 \begin{equation}
     \begin{aligned}
-    E\left[X_{t+s} | X_{0}\right]-E\left[X_{t} | X_{0}\right] & \approx\left(a(t) E\left[X_{t} | X_{t}\right]+b(t) s+g(t) \sqrt{s} E[\xi]\right. \\
+    E\left[X_{t+s} | X_{0}\right]-E\left[X_{t} | X_{0}\right] & \approx\left(a(t) E\left[X_{t} | X_{t}\right]+b(t)\right) s+g(t) \sqrt{sQ} E[\xi] \\
     & =\left(a(t) E\left[X_{t} | X_{0}\right]+b(t)\right) s .
     \end{aligned}
 \end{equation}
@@ -139,30 +144,30 @@ Note  $e(t)=E\left[X_{t} | X_{0}\right]$, then
 \end{equation}
 which is an ODE system, having solution
 \begin{equation}
-    e(t)=\left(X_{0}+\int_{0}^{t} e^{-\int_{0}^{s} a(r) d r} b(s) d s\right) \cdot e^{\int_{0}^{t} a(s) d s}
+    e(t)=e^{\int_{0}^{t} a(s) d s}\cdot\left(X_{0}+\int_{0}^{t} e^{-\int_{0}^{s} a(r) d r} b(s) d s\right)
 \end{equation}
 Therefore
 \begin{equation}
     \begin{aligned}
     E\left[X_{t}\right] & =E\left[E\left[X_{t} | X_{0}\right]\right]=E[e(t)] \\
-    & =\left(E\left[X_{0}\right]+\int_{0}^{t} e^{-\int_{0}^{s} a(r) d r} b(s) d s\right) e^{\int_{0}^{t} a(s) d s}
+    & =e^{\int_{0}^{t} a(s) d s}\cdot\left(E\left[X_{0}\right]+\int_{0}^{t} e^{-\int_{0}^{s} a(r) d r} b(s) d s\right) 
     \end{aligned}
 \end{equation}
 
 Similarly, Note $\operatorname{Var}\left(X_{0} | X_{0}\right)=v(t)$:
-then $\operatorname{Var}\left(X_{t+s} | X_{0}\right)=(1+s a(t))^{2} \operatorname{Var}\left(X_{t} | X_{0}\right)+s g^{2}(t)$. Then
+then $\operatorname{Var}\left(X_{t+s} | X_{0}\right)=(1+s a(t))^{2} \operatorname{Var}\left(X_{t} | X_{0}\right)+s gQg^\top$. Then
 \begin{equation}
     \begin{aligned}
         V^{\prime}(t)&=\lim _{s \rightarrow 0} \frac{\operatorname{Var}\left(X_{t+s} | X_{0}\right)-\operatorname{Var}\left(X_{t} | X_{0}\right)}{s}\\
         =&\left[\left(a^{2}(t) s+2 a(t)\right) v(t)+g^{2}(t)\right]|_{s \rightarrow 0}\\ 
-        =&2 \alpha(t) V(t)+g^{2}(t), \qquad V(0)=0
+        =&2 \alpha(t) V(t)+g(t)Qg^\top(t), \qquad V(0)=0
     \end{aligned}
 \end{equation}
 Solution is:
 \begin{equation}
-    v(t)=\left(\int_{0}^{t} e^{-\int_{0}^{s} 2 a(r) d r} g^{2}(s) d s\right)
-\end{equation}
-By law of total variance
+    v(t)=e^{\int_{0}^{t} 2a(s) d s}\cdot\left(\int_{0}^{t} e^{-\int_{0}^{s} 2 a(r) d r} g(s)Qg^\top(s) d s\right)
+\end{equation} 
+By law of total variance:
 \begin{equation}
     \begin{aligned}
         \operatorname{Var}\left(X_{t}\right)=&E\left[X_{t}^{2}\right]-E^{2}\left[X_{t}\right]=E\left[ E\left[X_{t}^{2} | X_{0}\right]\right]-E^{2}\left[X_{t}\right] \\
@@ -174,16 +179,16 @@ By law of total variance
 then 
 \begin{equation}
     \begin{aligned}
-        \operatorname{Var}=&E[V(t)]+\operatorname{Var}(e(t))\\
-        =&\left(\int_{0}^{t} e^{-\int_{0}^{s} 2 a(r) d r} g^{2}(s) d s\right) e^{\int_{0}^{t} 2 a(s) d s}+e^{\int_{0}^{t} 2 a(s) d s} \cdot \operatorname{Var}\left(X_{0}\right) .
+        \operatorname{Var}(X_t)=&E[V(t)]+\operatorname{Var}(e(t))\\
+        =&e^{\int_{0}^{t} 2 a(s) d s}\cdot \left(\int_{0}^{t} e^{-\int_{0}^{s} 2 a(r) d r} g(s)Qg^\top(s) d s\right) +e^{\int_{0}^{t} 2 a(s) d s} \cdot \operatorname{Var}\left(X_{0}\right) .
     \end{aligned}
 \end{equation}
 
-We have the following theorem which is crucial for diffusion models.
+We have the following theorem which is crucial for diffusion models. Usually, we assume $Q=I_m$.
 \begin{theorem}\label{thm1}
     If  $X_{t+s}=(1+a(t) s) X_{t}+b(t) s+g(t) \sqrt{s} \xi$\\
     then $X_{t} | X_{0} \sim N\left(E\left[X_{t} | X_{0}\right], \operatorname{Var}\left(X_{t} | X_{0}\right)\right)$, 
-    where $\left(E\left[X_{t} | X_{0}\right]=e(t), \operatorname{Var}\left(X_{t} | X_{0}\right)=V(t)\right)$.        
+    where $E\left[X_{t} | X_{0}\right]=e(t), \operatorname{Var}\left(X_{t} | X_{0}\right)=V(t)$.        
 \end{theorem}
 
 It should be noted that $e(t)$ is related to $X_0$ and t, while $V(t)$ only depends on $t$!
@@ -399,4 +404,91 @@ We have finished training  $\nabla_{x} \log \left(p\left(X_{t}=x\right)\right)$ 
     \nabla_{x} \log \left(p_{t}(x \mid y)\right)=S \nabla_{x} \log \left(p\left(y \mid x_{t}=x\right)\right)+\nabla_{x} \log \left(p\left(x_{t}=x\right)\right)
 \end{equation}
 Note  $\omega_{\theta}(y \mid x, t)$  to learn  $s \nabla_{x} \log \left(p\left(y \mid X_{t}=x\right)\right)$ 
+
+\section{FPK Equation}
+We have discussed the FPK Equation in 'learnsde'. 
+\begin{theorem}[Fokken-Planck-Kolmogorov equation]
+    The density function $p(x, t)$ of $X_t$ s.t. 
+    \begin{equation}
+        dX_t = f(X_t, t)dt + G(X_t,t)dW_t
+    \end{equation}
+    solves the PDE:
+    \begin{equation}
+        \frac{\partial p(x, t)}{\partial t}=-\sum_{i} \frac{\partial}{\partial x_{i}}\left[f_{i}(x, t) p(x, t)\right]+\frac{1}{2} \sum_{i, j} \frac{\partial^{2}}{\partial x_{i} \partial x_{j}}\left[\left(G Q G^{\top}\right)_{i j} p(x, t)\right]
+    \end{equation}
+    The PDE is called FPK equation / forwand Kolmogorov equation.
+\end{theorem}
+It can be rewritten as:
+\begin{equation}
+    \begin{aligned}
+        \frac{\partial p(x, t)}{\partial t} &= -\nabla\cdot\left[f(x, t) p(x, t)\right]+\frac{1}{2} \nabla^2\cdot\left[\left(G Q G^{\top}\right) p(x, t)\right] \\
+        &=-\nabla\cdot\left[f(x, t) p(x, t)-\frac{1}{2} \nabla\cdot\left[\left(G Q G^{\top}\right) p(x, t)\right]\right]
+    \end{aligned}
+\end{equation}
+Here, if we only consider $G(X_t, t)-g(t)$, then we notice that $M=GQG^T$ is independent of $X_t$, so we can write:
+\begin{equation}
+    \begin{aligned}
+        \frac{\partial p(x, t)}{\partial t} &= -\nabla\cdot\left(fp-\frac{1}{2}\nabla\cdot (Mp)\right)\\
+        &=-\nabla\cdot\left(fp-\frac{1}{2}M\nabla p\right)\\
+        &=-\nabla\cdot\left[\left(f-\frac{1}{2}M\frac{\nabla p}{p}\right)p\right]\\
+        &=-\nabla\cdot\left[\left(f-\frac{1}{2}M\nabla\log p\right)p\right]
+    \end{aligned}
+\end{equation}
+So we find out that if we have an ODE s.t. $dZ_t=F(Z_t, t)dt$ with $Z_0 \sim p_0$, instead of a SDE, then by FPK equation, the density $p(z, t)$ satisfies:
+\begin{equation}
+    \frac{\partial p(z, t)}{\partial t}=-\nabla\cdot\left(F(z, t)p(z, t)\right)
+\end{equation}
+So if we set $F(z, t)=f(z, t) - \frac{1}{2}M(t)\nabla\log p(z, t)$, then $p(z, t)$ is exactly like the density $p(x, t)$ of $X_t$ in SDE. 
+So theoretically, we can do the diffusion like reverse ode!
+
+This is the topic discussed in 'Probability Flow'.
+\section{Probability Flow}
+Define a flow $\phi: \mathcal{R}^d\times [0, 1]\rightarrow \mathcal{R}^d$ is a flow generated by a vector field $v: \mathcal{R}^d \times [0, 1]\rightarrow \mathcal{R}^d$ i.e.
+\begin{equation}\left\{
+    \begin{aligned}
+        \frac{\partial \phi(x, t)}{\partial t} &= v(\phi(x, t), t)\\
+        \phi(0, x)&=x
+    \end{aligned}\right.
+\end{equation}
+The flow means that under the vector field $v$, if the initial point is $x$, then the flow push the point after time $t$ to $\phi(x, t)$. That is $\phi$ gives the evolution trajectory of $x$ under the vector field $v$.
+So normally, we can consider the flow $\phi(x, t)$ as $X_t$ in SDE:
+\begin{equation}
+    dX_t = v(X_t, t)dt + 0dW_t
+\end{equation}
+with $X_0=x$. It turns out that it is actually an ODE, a SDE without diffusion term. Similar to SDE, if $X_0=x\sim p_0(x)$, we have the probability density $p(x, t)$ satisfies FPK equation:
+\begin{equation}
+    \frac{\partial p(x, t)}{\partial t}=-\nabla\cdot\left(v(x, t)p(x, t)\right)
+\end{equation}
+which is a special case of FPK equation, called \textbf{Continuity Equation}. So, typically, we can solution to an ODE is a flow.
+
+\begin{theorem}
+    \begin{equation}
+        v_t(x)=v(x, t) = \int v_{t1}(x|x_1)\frac{p_{t1}(x|x_1)p_1(x_1)}{p_t(x)}dx_1
+    \end{equation}
+    where $p_{t1}(x|x_1)=p(X_t=x|X_1=x_1), p_1(x_1)=p(X_1=x_1)$, and $v_{t|1}(x|x_1)$ is the vector field generating $p_{t1}(x|x_1)$.
+\end{theorem}
+\begin{proof}
+    By $p_t(x) = \int p_{t1}(x|x_1)p_1(x_1)dx_1$, we have:
+    \begin{equation}
+        \begin{aligned}
+            \frac{\partial p_t(x)}{\partial t} &= \int \frac{\partial p_{t1}(x|x_1)}{\partial t}p_1(x_1)dx_1\\
+            &= \int \left(-\nabla\cdot\left(v_{t1}(x|x_1)p_{t1}(x|x_1)p_1(x_1)\right)\right)dx_1\\
+            &= -\nabla\cdot\left(\int v_{t1}(x|x_1)p_{t1}(x|x_1)p_1(x_1)dx_1\cdot p_t(x)\right)\\
+            &= -\nabla\cdot\left(v_t(x)p_t(x)\right)
+        \end{aligned}
+    \end{equation}
+then 
+\begin{equation}
+    \begin{aligned}
+        &\int v_{t1}(x|x_1)p_{t1}(x|x_1)p_1(x_1)dx_1=v_t(x)p_t(x)\\
+        \Rightarrow &v_t(x) = \int v_{t1}(x|x_1)\frac{p_{t1}(x|x_1)p_1(x_1)}{p_t(x)}dx_1
+    \end{aligned}
+\end{equation}
+\end{proof}
+
+So the objective of Flow Matching Model can be described as: Let $p_t(x)$ be the density with initial $p_0(x)$, which is designed to be a simple distribution, like normal distribution. 
+So let $p_1(x)$ be the approximation equal in distribution to$ p_{data}$. Then we need to design a flow to match the flow s.t. $p_1$ can properly approximate $p_{data}$.
+
+
+
 \end{document} 
