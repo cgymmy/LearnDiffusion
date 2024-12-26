@@ -330,8 +330,8 @@ Normally we can define the loss function as follows:
         &=\underset{t\sim U(0, T)}{E}\left[\lambda(t)\underset{x_0\sim p_{data}}{E}\left[\underset{x_t\sim p_{t|0}(x_t|x_0)}{E}\left[\|s_\theta(x_t, t)-\nabla_{x_t}\log p_t(x_t)\|^2\right]\right]\right]
     \end{aligned}
 \end{equation}
-It should be clearified that $p_{t|0}(x_t|x_0)=p(X_t=x_t|X_0=x_0)$. So $$p_t(x_t)=\int p_{t|0}(x_t|x_0)p_0(x_0)dx_0=E_{x_0\sim p_{data}}\left[p_{t|0}(x_t|x_0)\right]$$.
-Then $p_{t}(x)=p\left(X_{t}=x\right) . \quad p_{t | 0}(x | y)=p\left(X_{t}=x | x_{0}=y\right)$.
+It should be clearified that $p_{t|0}(x_t|x_0)=p(X_t=x_t|X_0=x_0)$. So $$p_t(x_t)=\int p_{t|0}(x_t|x_0)p_0(x_0)dx_0=E_{x_0\sim p_{data}}\left[p_{t|0}(x_t|x_0)\right]$$
+where $p_{t}(x)=p\left(X_{t}=x\right)$, $p_{t | 0}(x | y)=p\left(X_{t}=x | X_{0}=y\right)$. Then
 
 \begin{equation}
     \begin{aligned}
@@ -356,7 +356,7 @@ Where we have used the following lemma:
 Then we can rewrite the loss function as:
 \begin{equation}
     \begin{aligned}
-        L_{\theta}&=\underset{t\sim U(0,T)}{E}\left[\lambda(t) \underset{x_{0}\sim p_{data}}{E}\left[\underset{x_{t}\sim p_{t|0}(x_t|x_0)}{E}\left[\left\|S_{\theta}\left(x_{t}, t\right)-\frac{\partial}{\partial x_{t}} \log p_{t}\left(x_{t}\right)\right\|^{2}\right]\right.\right.\\ 
+        L_{\theta}&=\underset{t\sim U(0,T)}{E}\left[\lambda(t) \underset{x_{0}\sim p_{data}}{E}\left[\underset{x_{t}\sim p_{t|0}(x_t|x_0)}{E}\left[\left\|S_{\theta}\left(x_{t}, t\right)-\nabla _{x_t}\log p_{t}\left(x_{t}\right)\right\|^{2}\right]\right.\right.\\ 
         &\leqslant \underset{t\sim U(0,T)}{E}\left[\lambda(t) \underset{x_{0}\sim p_{data}}{E}\left[\underset{x_{t}\sim p_{t|0}(x_t|x_0)}{E}\left[\underset{y\sim p_{data}}{E}\left[\left\|S_{\theta}\left(x_{t}, t\right)-\nabla_{x_{t}} \log \left(p_{t|0}(x_t | y)\right)\right\|^{2}\right]\right]\right]\right] \\
         &=\underset{t\sim U(0, T)}{E}\left[\lambda(t) \underset{x_{0}\sim p_{data}}{E}\left[\underset{x_{t}\sim p_{t|0}(x_t|x_0)}{E}\left[\| S_{\theta}\left(x_{t}, t\right)-\nabla_{x_{t}} \log \left(p_{t|0}\left(x_{t} | x_{0}\right) \|^{2}\right]\right]\right]\right.
     \end{aligned}
@@ -380,7 +380,7 @@ So
 \end{equation}
 where $\xi_\theta = -\sqrt{V(t)}s_\theta$ is called denoising network.
 
-\subsection{With Classifier}
+\subsection{With Classifier Guidance}
 Though we can produce pictures by sampling from normal distribution, we still cannot control what we will generate. What we want to do is something like:
 "Give me the pictures of number 6", then the model can sample from the normal distribution and do the denoising to generate pics of 6. 
 
@@ -393,18 +393,35 @@ Then we SDE becomes: $X_t \sim p_t(x|y)$
 
 \begin{equation}
     \begin{aligned}
-    & P_{t}(x \mid y)=P\left(X_{t}=x \mid y\right)=\frac{P\left(y \mid X_{t}=x\right) P\left(X_{t}=x\right)}{P(y)} \\
-    \Rightarrow & \log \left(P_{t}(x \mid y)\right)=\log \left(P\left(y \mid X_{t}=x\right)\right)+\log \left(P\left(X_{t}=x\right)\right)-\log (P(y)) \\
-    \Rightarrow & \nabla_{x} \log \left(P_{t}(x \mid y)\right)=\nabla_{x} \log \left(P\left(y \mid X_{t}=x\right)\right)+\nabla_{x} \log \left(P\left(X_{t}=x\right)\right)
+    & p_{t}(x \mid y)=p\left(X_{t}=x \mid y\right)=\frac{p\left(y \mid X_{t}=x\right) p\left(X_{t}=x\right)}{p(y)} \\
+    \Rightarrow & \log \left(p_{t}(x \mid y)\right)=\log \left(p\left(y \mid X_{t}=x\right)\right)+\log \left(p\left(X_{t}=x\right)\right)-\log (p(y)) \\
+    \Rightarrow & \nabla_{x} \log \left(p_{t}(x \mid y)\right)=\nabla_{x} \log \left(p\left(y \mid X_{t}=x\right)\right)+\nabla_{x} \log \left(p\left(X_{t}=x\right)\right)
     \end{aligned}
 \end{equation}
     
     
-We have finished training  $\nabla_{x} \log \left(p\left(X_{t}=x\right)\right)$  in sampling. Then we need to estimate  $\nabla_{x} \log \left(p\left(y \mid X_{t}=x\right)\right)$. This is the conditional protability, we end up with a sharp factor s: $P^{\prime}\left(y \mid X_{t}=x\right)$ , then:
+We have finished training  $\nabla_{x} \log \left(p\left(X_{t}=x\right)\right)$  in sampling. Then we need to estimate  $\nabla_{x} \log \left(p\left(y \mid X_{t}=x\right)\right)$. This is the conditional protability, we end up with a sharp factor s: $p^{\prime}\left(y \mid X_{t}=x\right)$ , then:
 \begin{equation}
     \nabla_{x} \log \left(p_{t}(x \mid y)\right)=S \nabla_{x} \log \left(p\left(y \mid x_{t}=x\right)\right)+\nabla_{x} \log \left(p\left(x_{t}=x\right)\right)
 \end{equation}
 Note  $\omega_{\theta}(y \mid x, t)$  to learn  $s \nabla_{x} \log \left(p\left(y \mid X_{t}=x\right)\right)$ 
+
+\subsection{Classifier Guidance Free}
+\begin{equation}
+    \begin{aligned}
+        &\gamma \nabla_{x} \log \left(p\left(y \mid X_{t}=x\right)\right)\\
+         =& \gamma\left(\nabla_x \log \left(p(X_t=x|y)\right) - \nabla_x \log \left(p_t(x)\right)\right)
+    \end{aligned}
+\end{equation}
+Then 
+\begin{equation}
+    \begin{aligned}
+        &\nabla_{x} \log_\gamma \left(p_{t}(x \mid y)\right)\\
+        =&(1-\gamma)\nabla_x \log \left(p_t(x)\right) + \gamma\nabla_x \log \left(p(X_t=x|y)\right)
+    \end{aligned}
+\end{equation}
+Hence we only need one conditional denoising network, and using null condition to represent the unconditional model.
+
 
 \section{Flow Matching}
 \subsection{FPK Equation}
@@ -526,17 +543,25 @@ Specially, when $G(X_t, t)=G(t)$ and $Q=I$, we have:
 So, when $X_0\sim p_0$, we can then compute the diffusion density $p(x, t)$ by solving the FPK equation.
 \subsection{From Flow Map}
 Since we have the definition of \textbf{Flow Map} $\phi_s^t(\mathbf{x})$, which is controlled by vector field $V(\phi_s^t(\mathbf{x}), t)$, 
-then just think the $\phi_0^t(\mathbf{x})$ as the position of the particle at time $t$, whose initial position is $x$. 
+then just think the $\phi_0^t(\mathbf{x})$ as the trajectory of the particle beginning at $x$ over time, noted as $\phi_t(x)$.
 Then the vector field is actually the velocity field of the particle, so we have:
 \begin{equation}\left\{
     \begin{aligned}
-        \frac{\partial \phi_0^t(\mathbf{x})}{\partial t} &= V(\phi_0^t(\mathbf{x}), t)\\
-        \phi_0^0(\mathbf{x}) &= \mathbf{x}
+        \frac{\partial \phi_t(\mathbf{x})}{\partial t} &= V(\phi_t(\mathbf{x}), t)\\
+        \phi_0(\mathbf{x}) &= \mathbf{x}
     \end{aligned}\right.
 \end{equation}
-Note $X_t:=\phi_0^t(X_0)$, then we have:
+The motion of particles described by $\phi_t$ determines how the density $p_t(x)$ evolves over time. 
+\begin{theorem}
+    When the initial density $p_0(x)$ is known, the density field can be expressed as:
 \begin{equation}
-    X_t \sim p_t(x)
+    p(\phi_t(x), t) = \frac{p_0(x)}{\left|\det J_{\phi_t}(x)\right|}
+\end{equation}
+\end{theorem}
+
+It should be noted that $\phi_t(x)$ is actually the same as $X_t$ in SDE, then similarly, the density is:
+\begin{equation}
+    \phi_t(x) \sim p_t(x)
 \end{equation}
 So, the flow map is an ODE, which is a special case of SDE without diffusion term. Then we have:
 \begin{theorem}[Continuity Equation]
@@ -547,8 +572,15 @@ So, the flow map is an ODE, which is a special case of SDE without diffusion ter
     which is called \textbf{Continuity Equation}.
 \end{theorem}
 \begin{remark}
-    The continuity equation can also be derived from the Conservation of Mass.
+    The continuity equation can also be derived from the Conservation of Mass. 
 \end{remark}
+
+\begin{theorem}
+    When the incompressible condition is satisfied, that is $\nabla\cdot V=0$, then the flow $\phi_t(x)$ is \textbf{measure preserving}, that is:
+    \begin{equation}
+        \left|\det J_{\phi_t}(x)\right|=1, \text{i.e.}p(\phi_t(x), t) = p_0(x)
+    \end{equation}
+\end{theorem}
 
 \begin{definition}[Flux]
     We find that $-V(x, t)p(x, t)$ is actually the flux $\mathcal{F}(x, t)$ of the particle.
@@ -633,4 +665,5 @@ Till here, we can see the insight of diffusion. It is actually a process of smoo
 \subsection{From Applications in VLSI}
 ...
 
+\section{OT}
 \end{document} 
