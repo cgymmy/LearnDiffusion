@@ -1,0 +1,31 @@
+\contentsline {section}{\numberline {1}Introduction to SDEs}{2}{section.1}%
+\contentsline {subsection}{\numberline {1.1}SODEs}{2}{subsection.1.1}%
+\contentsline {subsection}{\numberline {1.2}The It'so and Stratonovich Stochastic Integrals}{2}{subsection.1.2}%
+\contentsline {subsection}{\numberline {1.3}Ito's Formula}{2}{subsection.1.3}%
+\contentsline {subsection}{\numberline {1.4}Mean and Covariance}{2}{subsection.1.4}%
+\contentsline {section}{\numberline {2}Fokker-Planck-Kolmogorov Equation}{3}{section.2}%
+\contentsline {subsection}{\numberline {2.1}FPK Equation}{3}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}Langevin SDE}{5}{subsection.2.2}%
+\contentsline {section}{\numberline {3}Numerical Methods}{6}{section.3}%
+\contentsline {section}{\numberline {4}What is Diffusion After All?}{6}{section.4}%
+\contentsline {subsection}{\numberline {4.1}From SDEs}{6}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}From Flow Map}{7}{subsection.4.2}%
+\contentsline {subsection}{\numberline {4.3}Solution}{7}{subsection.4.3}%
+\contentsline {section}{\numberline {5}Variational Auto-Encoder}{8}{section.5}%
+\contentsline {subsection}{\numberline {5.1}Structure}{8}{subsection.5.1}%
+\contentsline {subsection}{\numberline {5.2}Evidence Lower Bound}{9}{subsection.5.2}%
+\contentsline {section}{\numberline {6}Diffusion Model}{9}{section.6}%
+\contentsline {subsection}{\numberline {6.1}DDPM}{9}{subsection.6.1}%
+\contentsline {subsection}{\numberline {6.2}Score Matching}{12}{subsection.6.2}%
+\contentsline {subsubsection}{\numberline {6.2.1}Explicit Score Matching}{13}{subsubsection.6.2.1}%
+\contentsline {subsubsection}{\numberline {6.2.2}Implicit Score Matching}{13}{subsubsection.6.2.2}%
+\contentsline {subsubsection}{\numberline {6.2.3}Denoising Score Matching}{13}{subsubsection.6.2.3}%
+\contentsline {subsection}{\numberline {6.3}Denoising Diffusion}{14}{subsection.6.3}%
+\contentsline {subsubsection}{\numberline {6.3.1}With Classifier Guidance}{14}{subsubsection.6.3.1}%
+\contentsline {subsubsection}{\numberline {6.3.2}Classifier Guidance Free}{14}{subsubsection.6.3.2}%
+\contentsline {section}{\numberline {7}Flow Matching}{15}{section.7}%
+\contentsline {subsection}{\numberline {7.1}FPK Equation}{15}{subsection.7.1}%
+\contentsline {subsection}{\numberline {7.2}Probability Flow}{15}{subsection.7.2}%
+\contentsline {section}{\numberline {A}Conservation Laws}{17}{appendix.A}%
+\contentsline {subsection}{\numberline {A.1}Flow Map}{17}{subsection.A.1}%
+\contentsline {subsubsection}{\numberline {A.1.1}Conservation Laws}{17}{subsubsection.A.1.1}%

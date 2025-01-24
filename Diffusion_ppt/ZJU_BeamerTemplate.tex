@@ -1,0 +1,465 @@
+%# -*- coding:utf-8 -*-
+\documentclass[10pt,aspectratio=169,mathserif]{beamer}		
+%设置为 Beamer 文档类型，设置字体为 10pt，长宽比为16:9，数学字体为 serif 风格
+
+%%%%-----导入宏包-----%%%%
+\usepackage{zju}			%导入 zju 模板宏包
+\usepackage{ctex}			%导入 ctex 宏包，添加中文支持
+\usepackage{amsmath,amsfonts,amssymb,bm}   %导入数学公式所需宏包
+\usepackage{color}			 %字体颜色支持
+\usepackage{graphicx,hyperref,url}
+\usepackage{metalogo}	% 非必须
+%% 上文引用的包可按实际情况自行增删
+%%%%%%%%%%%%%%%%%%
+\usepackage{fontspec}
+\usepackage{xeCJK}
+\usepackage{mathrsfs}
+% \setCJKmainfont{Source Han Sans SC}
+
+
+
+\beamertemplateballitem		%设置 Beamer 主题
+
+%%%%------------------------%%%%%
+\catcode`\。=\active         %或者=13
+\newcommand{。}{．}				
+%将正文中的“。”号转换为“.”。中文标点国家规范建议科技文献中的句号用圆点替代
+%%%%%%%%%%%%%%%%%%%%%
+
+%%%%----首页信息设置----%%%%
+\title[What is Diffusion After All?]{What is Diffusion After All?}
+\subtitle{From SDE and OT}
+%%%%----标题设置
+
+
+\author[Guanyu Chen]{
+  陈冠宇 }
+%%%%----个人信息设置
+  
+\institute[IOPP]{Zhejiang University}
+%%%%----机构信息
+
+\date[\today]{\today}
+%%%%----日期信息
+  
+\begin{document}
+
+\begin{frame}
+	\titlepage
+\end{frame}				%生成标题页
+
+\begin{frame}
+	\frametitle{Table of Contents}
+	\tableofcontents
+\end{frame}
+
+\section{What is Diffusion?}
+\subsection{Background and Pre-knowledge}
+\begin{frame}{Background and Pre-knowledge}
+    \begin{block}{Topic: What is Diffusion?}
+        The diffusion phenomenon occurs naturally and broadly.
+        \begin{itemize}
+            \item Noise? What?
+            \item Random particle movement? How?
+            \item Laplace operator? Why?
+        \end{itemize}
+    \end{block}
+    \begin{block}{Remark}
+        \begin{itemize}
+            \item Fundamental theory of diffusion, covering topics such as SDEs/ODEs, conservation laws and optimal transport theory.
+            \item Revisit some classical papers
+            \item Some proofs have been omitted. If you require them, please feel free to contact me.
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+\subsection{From Brownian Motion}
+\begin{frame}{From Brownian Motion}
+    \begin{block}{Definition: SDE}
+        Diffusion phenomenon is observed through the motion of particles(Brownian motion). 
+        Normally, the SDE can be written as:
+        \begin{equation}\label{1}
+            dX_t = f(X_t, t)dt + G(X_t, t)dW_t
+        \end{equation}
+        where $X_t\in \mathbf{R}^d,f\in \mathcal{L}(\mathbf{R}^{d+1}, \mathbf{R}^d)$, and $W_t$ is m-dim Brownian Motion with diffusion matrix $Q$, $G(X_t, t)\in \mathcal{L}(\mathbf{R}^{m+1}, \mathbf{R}^d)$, with initial condition $X_0\sim p(X_0)$.
+    \end{block}
+    Here, we skip the drift term $f(X_t, t)$ and only consider the diffusion term $G(X_t, t)dW_t$, i.e.
+    \begin{equation}\label{2}
+        dX_t = G(X_t, t)dW_t
+    \end{equation}
+
+\end{frame}
+
+\begin{frame}
+\begin{block}{Theorem: Fokken-Planck-Kolmogorov(FPK) Equation}
+    We want to consider the density distribution of $X_t, p(x, t)$
+    The density function $p(x, t)$ of $X_t$ s.t. Eq \ref{1} solves the PDE:
+    \begin{equation}
+        \frac{\partial p(x, t)}{\partial t}=-\sum_{i} \frac{\partial}{\partial x_{i}}\left[f_{i}(x, t) p(x, t)\right]+\frac{1}{2} \sum_{i, j} \frac{\partial^{2}}{\partial x_{i} \partial x_{j}}\left[\left(G Q G^{\top}\right)_{i j} p(x, t)\right]
+    \end{equation}
+    The PDE is called FPK equation / forwand Kolmogorov equation.
+\end{block}
+It can be derived by Ito's Formula. So, apply this to Eq \ref{2}, we can get:
+\begin{equation}
+    \frac{\partial p(x, t)}{\partial t} = \frac{1}{2} \sum_{i, j} \frac{\partial^{2}}{\partial x_{i} \partial x_{j}}\left[\left(G Q G^{\top}\right)_{i j} p(x, t)\right]=\frac{1}{2}\nabla \cdot \left(\nabla\cdot (GQG^Tp(x, t))\right)
+\end{equation}
+        Specially, when $G(X_t, t)=G(t)$ and $Q=I$, we have:
+    \begin{equation}
+        \frac{\partial p}{\partial t} = \nabla \cdot \left(\frac{GG^T}{2}\nabla p\right)
+    \end{equation}
+\end{frame}
+
+\subsection{From Flow Map}
+\begin{frame}{From Flow Map}
+    \begin{block}{Definition: Flow Map}
+        Assume a description of some characteristic of particle $\mathbf{P}$, like the position or the boundary, as $\mathbf{x}\in \mathcal{R}^d$, then we have a flow map $\phi_s^t(\mathbf{x})\in \mathcal{R}^d$, 
+    which means that the flow transimits the characteristic $\mathbf{x}$ from $\mathbf{x}$ at $s$ to $\phi_s^t(\mathbf{x})$ at $t$, controlled by the vector field $\mathbf{F}: \mathcal{R}^d\times \mathcal{R}\to \mathcal{R}^d$:
+    \begin{equation}\left\{
+        \begin{aligned}
+            \frac{d\phi_s^t(\mathbf{x})}{dt} &= \mathbf{F}(\phi_s^t(\mathbf{x}), t)\\
+            \phi_s^s(\mathbf{x}) &= \mathbf{x}
+        \end{aligned}\right.
+    \end{equation}
+    \end{block}
+    Think $\phi_0^t(x)$ as the trajectory of the particle beginning at $x$ over time, noted as $\phi_t(x)$. 
+    Then the Flow Map is controlled by the velocity field of the particle, so we have:
+\begin{equation}\left\{
+    \begin{aligned}
+        \frac{\partial \phi_t(\mathbf{x})}{\partial t} &= V(\phi_t(\mathbf{x}), t)\\
+        \phi_0(\mathbf{x}) &= \mathbf{x}
+    \end{aligned}\right.
+\end{equation}
+So, the flow map is an ODE, which is a special case of SDE without diffusion term.
+\end{frame}
+
+\begin{frame}
+    \begin{block}{Theorem: Continuity Equation}
+        The probability density function $p(x, t)$ of $X_t$ satisfies:
+    \begin{equation}\label{dd}
+        \frac{\partial p(x, t)}{\partial t} = -\nabla\cdot\left(V(x, t)p(x, t)\right)
+    \end{equation}
+    which is called \textbf{Continuity Equation}.
+    \end{block}
+    This can be derived by apply FPK equation, or by Conservation of Mass.
+    \begin{block}{Theorem: Transport Density}
+        When the initial density $p_0(x)$ is known, the density field can be expressed as:
+    \begin{equation}
+        p(\phi_t(x), t) = \frac{p_0(x)}{\left|\det J_{\phi_t}(x)\right|}
+    \end{equation}
+    \end{block}
+    Think the density here as probability density. Easy to get.
+
+\end{frame}
+
+\begin{frame}
+        \begin{block}{Therorm: Incompressible condition}
+        When the incompressible condition is satisfied, that is $\nabla\cdot V=0$, then the flow $\phi_t(x)$ is \textbf{measure preserving}, that is:
+    \begin{equation}
+        \left|\det J_{\phi_t}(x)\right|=1, \text{i.e.}p(\phi_t(x), t) = p_0(x)
+    \end{equation}
+    \end{block}
+    This is actually a Monge Problem in Optimal Transport. Back to Eq \ref{dd}, we find that:
+    \begin{block}{Definition: Flux}
+        As $V(x, t)p(x, t)$ is actually the flux $\mathcal{F}(x, t)$ of the particle.    
+    \end{block}
+    If the flux s.t. $F = -\frac{1}{2}\nabla\cdot\left(GQG^Tp(x, t)\right)$, then $p(x, t)$ describes the diffusion process. This is the famous Fick's Law.
+\end{frame}
+
+\begin{frame}
+    \begin{block}{Theorem: Fick's Law}
+        Fick's Law describes the relationship between the flux $\mathcal{F}(x, t)$ of the particle and the concentration/density $p(x, t)$.:
+    \begin{equation}
+        \mathcal{F}(x, t) = -\frac{1}{2}\nabla\cdot\left(GQG^Tp(x, t)\right)
+    \end{equation}
+    Specifically, when $G(X_t, t)=G(t)$ and $Q=I$, we have:
+    \begin{equation}
+        \mathcal{F}(x, t) = -\frac{GG^T}{2}\nabla p(x, t)
+    \end{equation}
+    Then 
+    \begin{equation}
+        \frac{\partial p(x, t)}{\partial t} = \nabla \cdot\left(\frac{GG^T}{2}\nabla p(x, t)\right)
+    \end{equation}
+    \end{block}
+\end{frame}
+
+\subsection{Solution}
+\begin{frame}{Solution}
+    Note $-\frac{GG^T}{2}$ is actually the diffusion coefficient $\mathcal{D}$. Then we have the diffusion equation:
+\begin{equation}
+    \frac{\partial p(x, t)}{\partial t} = \nabla \cdot\left(\mathcal{D}\nabla p(x, t)\right)
+\end{equation}
+with initial condition $p(x, 0) = p_0(x)$. We can use the Fourier Transform to solve this equation. 
+\begin{block}{Solution of Diffusion}
+    The solution to the diffusion equation is:
+    \begin{equation}
+        \begin{aligned}
+            p(x, t) &= \mathscr{F}^{-1}\left[\tilde{p}_0(\lambda)\exp\left(-\lambda^T\mathcal{D}\lambda t\right)\right]=\left(p_0\star \mathcal{G}_{2t\mathcal{D}}\right)(x)\\
+            & = \frac{1}{\sqrt{(4\pi t)^d\det(\mathcal{D})}}\int_{\mathcal{R}^d}\left(p_0(\xi)\exp\left(-\frac{1}{4t}\left(x-\xi\right)^T\mathcal{D}^{-1}\left(x-\xi\right)\right)\right)d\xi
+        \end{aligned}
+    \end{equation}
+    where $\tilde{p}_0(\lambda) = \mathscr{F}(p_0(x))$ is the Fourier Transform of $p_0(x)$. $\mathcal{G}_{2t\mathcal{D}}$ is the Gaussian Kernel with variance $2t\mathcal{D}$.
+
+\end{block}
+So, SDE here and ODEs are connected through Fick's law in some sences.
+\end{frame}
+
+\begin{frame}
+    Specially
+    
+    1. When the initial density $p_0(x)$ is $\delta(x - x_0)$, the solution is:
+\begin{equation}
+    p(x, t) = \frac{1}{\sqrt{(4\pi t)^d\det{\mathcal{D}}}}\exp\left(-\frac{(x-x_0)^T\mathcal{D}^{-1}(x-x_0)}{4t}\right)\sim N(x_0, 2t\mathcal{D})
+\end{equation}
+2. When the initial density $p_0(x)$ is a Gaussian distribution $N(\mu, \Sigma)$, the solution is:
+\begin{equation}
+    p(x, t) = \frac{1}{\sqrt{(2\pi)^d\det(\Sigma + 2t\mathcal{D})}}\exp\left(-\frac{1}{2}\left(x-\mu\right)^T\left(\Sigma + 2t\mathcal{D}\right)^{-1}\left(x-\mu\right)\right)\sim N(\mu, \Sigma + 2t\mathcal{D})
+\end{equation}
+(The Fourier transform of $\left(\mu, \Sigma \right)$ is $\exp \left(-i\lambda^T\mu + \frac{1}{2}\lambda^T\Sigma\lambda\right)$.)
+\end{frame}
+
+\subsection{Sum up}
+\begin{frame}{Sum up}
+\begin{block}{Sum up}
+    So, the diffusion can be expressed in multiscale ways.
+    \begin{itemize}
+        \item Microscopic: SDE/ODEs->Brownian
+        \item Macroscopic: Flow and Density.->Gaussian kernel smoothing.
+    \end{itemize}
+    
+\end{block}
+    
+\end{frame}
+
+\section{Back to Generative Model}
+\subsection{Linear SDE}
+\begin{frame}{Linear SDE}
+    Then we talk about linear SDE, which has great properties and can be applied to Diffusion Model.
+    \begin{block}{Definition: Linear SDE}
+        The linear SDE has explicit solution. Assume the linear SDe has the form 
+\begin{equation}
+    dX_t =\left(K(t)X_t + B(t)\right)dt + G(t)dW_t
+\end{equation}
+where $K(t)\in \mathbf{R}^{d\times d}, B(t)\in \mathbf{R}^{d}, G(t)\in \mathbf{R}^{d\times m}$ are given functions. 
+$X_t \in \mathbf{R}^d$ is the state vector, $W_t \in \mathbf{R}^m$ is the Brownian Motion with diffusion matrix $Q$.
+
+    \end{block}
+\end{frame}
+
+\begin{frame}
+    \begin{block}{Theorem: Mean and Covariance}
+        The mean and covariance function of solution to linear SDE are given by:
+    \begin{equation}\label{mc}
+        \left\{
+            \begin{aligned}
+                &\frac{d m}{d t} = K(t)m(t) + B(t)\\
+                &\frac{d c}{d t} = K(t)c(t) + c(t)K^T(t)+ G(t)QG^T(t)
+            \end{aligned}
+        \right.
+    \end{equation}
+    with initial condition $m_0 =m(t_0)=E[X_0], c_0 =c(t_0)=Cov(X_0)$. Then the solution is given by solving the above ODEs:
+    \begin{equation}\label{LSDEMC}
+        \left\{
+            \begin{aligned}
+                &m(t) = \Psi(t, t_0)m_0 + \int_{t_0}^t \Psi(t, s)B(s)ds\\
+                &c(t) = \Psi(t, t_0)c_0\Psi^T(t, t_0) + \int_{t_0}^t \Psi(t, s)G(s)QG^T(s)\Psi^T(t, s)ds
+            \end{aligned}
+        \right.
+    \end{equation}
+\end{block}
+\end{frame}
+
+\begin{frame}
+\begin{block}{Solution}
+    The solution to LSDE is Gaussian:
+\begin{equation}
+    p(X, t) = \mathcal{N}(X(t)|m(t), c(t))
+\end{equation}
+Specially when $X_0 = x_0$ is fixed, then 
+\begin{equation}\label{transitiondensity}
+    p(X,t|X_0=x_0) = \mathcal{N}(X(t)|m(t|x_0), c(t|x_0))
+\end{equation}
+That is, $m_0 = x_0, c_0 = 0$. Then we have:
+\begin{equation}
+    \left\{
+        \begin{aligned}
+            &m(t|x_0) = \Psi(t, t_0)x_0 + \int_{t_0}^t \Psi(t, s)B(s)ds\\
+            &c(t|x_0) = \int_{t_0}^t \Psi(t, s)G(s)QG^T(s)\Psi^T(t, s)ds
+        \end{aligned}
+    \right.
+\end{equation}
+\end{block}
+    
+\end{frame}
+
+\subsection{Diffusion Model}
+\begin{frame}{Diffusion Model}
+So, the first step of diffusion model is to design a forward SDE, which can push the origin distribution $p_{data}$ foward to $p_t$, a distribution easy to handle, as $t\rightarrow \infty$.
+
+Here we mainly talk about Variance preserving Diffusion Models.
+\begin{block}{Variance preserving SDE}
+    we have diffusion model like:
+\begin{equation}
+\begin{aligned}
+    X_{t_{i+1}}&=\sqrt{1-\left(\beta\left(t_{i+1}\right)-\beta\left(t_{i}\right)\right)}X_{t_i}+\sqrt{\left(\beta\left(t_{i+1}\right)-\beta\left(t_{i}\right)\right)}\xi\\
+    &=\sqrt{1-\Delta\beta(t_i)}X_{t_i}+\sqrt{\Delta \beta(t_i)}\xi
+\end{aligned}
+\end{equation}
+Then the conditional distribution is given by:
+\begin{equation}
+    q\left(X_{t_{i+1}} | X_{t_{i}}\right)=N(x_{t_{i+1}} ; \sqrt{1-\Delta \beta\left(t_{i}\right)}X_{t_i}, \Delta \beta\left(t_{i}\right))
+\end{equation}
+\end{block}
+\end{frame}
+
+\begin{frame}
+Then we can estimate the drift and diffution term of VP SDE.
+\begin{block}{Drift and Diffusion Term}
+    The drift term  $f$  and diffusion term  $g$ can be estimated by:
+
+\begin{equation}\left\{
+    \begin{aligned}
+        f(x, t)&=-\frac{x}{2} \beta^{\prime}(t) . \\
+    g(t) &= \sqrt{\beta^{\prime}(t)}
+    \end{aligned}\right.
+\end{equation}
+Then the model can be written as
+$d X_t=-\frac{x}{2} \beta^{\prime}(t) d t+\sqrt{\beta^{\prime}(t)} d W_{t}$
+\end{block}
+    
+\end{frame}
+
+\begin{frame}
+We can find out that the VPSDE is a LSDE, so that the mean and covariance can be computed as
+\begin{block}{Theorem: Mean and Covariance}
+By Thm \ref{mc}, we can get the mean and covariance of VPSDE:
+    \begin{equation}\label{vpsdemc}
+    \left\{\begin{aligned}
+    &E\left[X_{t} | X_{0}\right]=X_{0} e^{\int_{0}^{t}-\frac{1}{2} \beta'(s) d s}=X_{0} e^{-\frac{1}{2} \beta(t)} \\
+    &E\left[X_{t}\right]=E\left[X_{0}\right] e^{-\frac{1}{2} \beta(t)} \\
+    &V\left(X_{t} | X_{0}\right)=\int_{0}^{t} e^{\int_{0}^{s} \beta^{\prime}(r) d r} \beta^{\prime}(s) d s \cdot e^{-\beta(t)}=1-e^{-\beta(t)} \\
+    &V\left(X_{t}\right)=1-e^{-\beta(t)}+V\left(X_{0}\right) e^{-\beta(t)}=1+\left(V\left(X_{0}\right)-1\right) e^{-\beta(t)} .
+    \end{aligned}\right.
+\end{equation}
+\end{block}
+So as  $t \rightarrow \infty,\beta(t) \rightarrow \infty$, then  $E \rightarrow 0, V \rightarrow 1$, i.e. 
+$X_{t} | X_{0} \sim N\left(E\left[X_{t} | X_{0}\right], \operatorname{Var}\left|X_{t}\right| X_{0}\right)\rightarrow N(0,1)$ as $ t \rightarrow \infty$.
+ 
+\end{frame}
+
+\begin{frame}
+The second step of Diffusion Model is to denoising, or generating pics from samples that are from Normal Distribution.
+So we firsr need to define Reverse SDE.
+\begin{block}{Reverse SDE}
+    From $X_T\sim p_T$,
+\begin{equation}
+    d\bar{X_t}=\bar{f}(\bar{X}_t, t)dt + \bar{G}(t)d\bar{W_t}
+\end{equation}
+where $\bar{W}_t$ is Brownian Motion runns backward in time, i.e. $\bar{W}_{t-s}-\bar{W}_t$ is independent of $\bar{W}_t$. We can approximate by EM:
+\begin{equation}
+    \bar{X}_{t-s}-\bar{X}_t=-s\bar{f}(\bar{X}_t, t) + \sqrt{s}\bar{G}(t)\xi
+\end{equation}
+
+\end{block}
+So the problem is: If given $f,G$, are there $\bar{f},\bar{G}$ s.t. the reverse time diffusion process $\bar{X}_t$ has the same distribution as the forward process $X_t$? Yes!
+    
+\end{frame}
+
+\begin{frame}
+A theorem gives that we can design reverse sde s.t. it has the same distribution density with forward SDE.
+\begin{block}{Reverse SDE}
+The reverse SDE with $\bar{f},\bar{G}$ having the following form has the same distribution as the forward SDE:
+    \begin{equation}\left\{
+        \begin{aligned}
+            &\bar{f}(x,t)=f(x,t)-GG^T\nabla_x\log p_t(x)\\
+            &\bar{G}=G(t)
+        \end{aligned}\right.
+    \end{equation}
+    i.e. 
+    \begin{equation}
+        d\bar{X}_t = \left[f(\bar{X}_t, t)-GG^T\nabla_x\log p_t(x_t)\right]dt+G(t)d\bar{W}_t
+    \end{equation}
+\end{block}
+So, the Key of Diffusion model is to learn $\nabla_x\log p_t(x_t)$， which is called \textbf{score}.
+\end{frame}
+
+\begin{frame}{Loss function}
+    Normally we can define the loss function as follows:
+\begin{equation}
+    \begin{aligned}
+        L_\theta & = \frac{1}{T}\int_0^T\lambda(t)\underset{x_0\sim p_{data}}{E}\left[\underset{x_t\sim p_{t|0}(x_t|x_0)}{E}\left[\|S_\theta(x_t, t)-\nabla_{x_t}\log p_t(x_t)\|^2\right]\right]dt\\
+        &=\underset{t\sim U(0, T)}{E}\left[\lambda(t)\underset{x_0\sim p_{data}}{E}\left[\underset{x_t\sim p_{t|0}(x_t|x_0)}{E}\left[\|S_\theta(x_t, t)-\nabla_{x_t}\log p_t(x_t)\|^2\right]\right]\right]
+    \end{aligned}
+\end{equation}
+Do some thing tricky, which i will skip here, we can rewrite the Loss as:
+\begin{equation}
+    \begin{aligned}
+        L_{\theta}&=\underset{t\sim U(0,T)}{E}\left[\lambda(t) \underset{x_{0}\sim p_{data}}{E}\left[\underset{x_{t}\sim p_{t|0}(x_t|x_0)}{E}\left[\left\|S_{\theta}\left(x_{t}, t\right)-\nabla _{x_t}\log p_{t}\left(x_{t}\right)\right\|^{2}\right]\right.\right.\\ 
+        &\leqslant \underset{t\sim U(0,T)}{E}\left[\lambda(t) \underset{x_{0}\sim p_{data}}{E}\left[\underset{x_{t}\sim p_{t|0}(x_t|x_0)}{E}\left[\underset{y\sim p_{data}}{E}\left[\left\|S_{\theta}\left(x_{t}, t\right)-\nabla_{x_{t}} \log \left(p_{t|0}(x_t | y)\right)\right\|^{2}\right]\right]\right]\right] \\
+        &=\underset{t\sim U(0, T)}{E}\left[\lambda(t) \underset{x_{0}\sim p_{data}}{E}\left[\underset{x_{t}\sim p_{t|0}(x_t|x_0)}{E}\left[\| S_{\theta}\left(x_{t}, t\right)-\nabla_{x_{t}} \log \left(p_{t|0}\left(x_{t} | x_{0}\right) \|^{2}\right]\right]\right]\right.
+    \end{aligned}
+\end{equation}
+
+\end{frame}
+
+\begin{frame}
+It is nice that we have already had explicit expression of $p_{t|0}\left(x_{t} | x_{0}\right)$ by Thm \ref{vpsdemc}.  
+
+Then $X_t=e(t, X_0)+\sqrt{V(t)}\xi$, where $\xi\sim N(0, I)$, then the score function is:
+\begin{equation}
+    \nabla_x \log p_{t | 0}\left(x | x_{0}\right)=-\frac{x-E_{t | 0}\left[x | x_{0}\right]}{\operatorname{Var}_{t | 0}\left(x | x_{0}\right)}=-\frac{x-e(t, X_0)}{V(t)}\sim -N\left(0, \frac{1}{V(t)}\right)
+\end{equation}
+So
+\begin{block}{Loss Function}
+    \begin{equation}
+\begin{aligned}
+    L_\theta=&\underset{t\sim U(0,T)}{E}\left[\lambda (t)\underset{x_0\sim p_{data}}{E}\left[\underset{\xi\sim N(0, 1)}{E}\left[\left\|s_\theta\left(\sqrt{V(t)}\xi+e(t, X_0), t\right) + \frac{\xi}{\sqrt{V(t)}}\right\|^2\right]\right]\right]\\
+    =&\underset{t\sim U(0,T)}{E}\left[\lambda (t)\underset{x_0\sim p_{data}}{E}\left[\frac{1}{V(t)}\underset{\xi\sim N(0, 1)}{E}\left[\left\|\xi_\theta\left(\sqrt{V(t)}\xi+e(t, X_0), t\right)-\xi\right\|^2\right]\right]\right]
+\end{aligned}    
+\end{equation}
+where $\xi_\theta = -\sqrt{V(t)}s_\theta$ is called denoising network.
+\end{block}
+
+
+\end{frame}
+
+\subsection{Flow Matching}
+\begin{frame}{Flow Matching}
+    So, back to the beginning, we have discussed about the Diffusion from the Flow Map. Here, let's look the forward SDE (Eq \ref{1}) carefully.
+    \begin{block}{Flow matching}
+        \begin{enumerate}
+            \item We have Forward SDE
+            \item We can estimate the density $p(x, t)$
+            \item If i can design a ODE flow to mimic the SDE density?
+        \end{enumerate}
+    \end{block}
+\end{frame}
+
+
+\begin{frame}
+So if we have an ODE s.t. $dZ_t=F(Z_t, t)dt$ with $Z_0 \sim p_0$, instead of a SDE, then by FPK equation, the density $p(z, t)$ satisfies:
+\begin{equation}
+    \frac{\partial p(z, t)}{\partial t}=-\nabla\cdot\left(F(z, t)p(z, t)\right)
+\end{equation}
+    We only consider $G(X_t, t)=g(t)$, then we notice that $M=GQG^T$ is independent of $X_t$, so we can write:
+\begin{equation}
+        \frac{\partial p(x, t)}{\partial t} =-\nabla\cdot\left[\left(f-\frac{1}{2}M\nabla\log p\right)p\right]
+\end{equation}
+
+So if we set $F(z, t)=f(z, t) - \frac{1}{2}M(t)\nabla\log p(z, t)$, then $p(z, t)$ is exactly like the density $p(x, t)$ of $X_t$ in SDE. 
+\end{frame}
+
+\begin{frame}{Sum up}
+    \begin{block}{Summation}
+    \begin{itemize}
+        \item When it comes to ODE, we have many great high-order numerical solvers. 
+        \item Nevertheless to say, accelerating and controlling are two main topics in many aspects.
+        \item For Flow matching, it is essentially a special case of Optimal Transport.
+    \end{itemize}
+    \end{block}
+\end{frame}
+\section{Thanks}
+\begin{frame}{Thanks}
+    \huge{Thanks!}
+\end{frame}
+
+\end{document}

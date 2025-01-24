@@ -1,0 +1,81 @@
+\newpage
+\appendix
+
+\section{Conservation Laws}
+\subsection{Flow Map}
+\begin{theorem}Two important theorems in calculus:
+
+    1.\textbf{Divergence Theorem}:
+    \begin{equation}
+        \int_{\Omega} \nabla \cdot \mathbf{F} d x = \int_{\partial \Omega} \mathbf{F} \cdot \mathbf{n} d S
+    \end{equation}
+
+    2.\textbf{Reynolds Transport Theorem}:
+    \begin{equation}
+        \frac{d}{dt}\int_{\Omega(t)} f(t, x) d x = \int_{\Omega (t)} \frac{\partial f}{\partial t} d x + \int_{\partial \Omega (t)} f(t, x) \mathbf{v} \cdot \mathbf{n} d S
+    \end{equation}
+    where $u$ is the velocity at $\partial \Omega (t)$.
+\end{theorem}
+Here the $\Omega(t)$ is the domain of the flow, and the $\partial \Omega(t)$ is the boundary of the flow, which is described by the flow map $\phi_s^t$. Here is the definition.
+\begin{definition}[Flow Map]
+    Assume a description of some characteristic of particle $\mathbf{P}$, like the position or the boundary, as $\mathbf{x}\in \mathcal{R}^m$, then we have a flow map $\phi_s^t(\mathbf{x})\in \mathcal{R}^m$, 
+    which means that the flow transimits the characteristic(position) $\mathbf{x}$ from $\mathbf{x}$ at $s$ to $\phi_s^t(\mathbf{x})$ at $t$, controlled by the vector field(velocity field) $\mathbf{F}: \mathcal{R}^m\times \mathcal{R}\to \mathcal{R}^m$:
+    \begin{equation}\left\{
+        \begin{aligned}
+            \frac{d\phi_s^t(\mathbf{x})}{dt} &= \mathbf{F}(\phi_s^t(\mathbf{x}), t)\\
+            \phi_s^s(\mathbf{x}) &= \mathbf{x}
+        \end{aligned}\right.
+    \end{equation}
+\end{definition}
+\subsubsection{Conservation Laws}
+If we assume $\Omega(t)$ is composed of particles, i.e. $\Omega(t)=\phi_{t_0}^t(\Omega)$(when $t = t_0$, $\Omega(t_0)=\Omega$), 
+then we by \textbf{conservation of mass}, we have the following theorem:
+\begin{theorem}[Continuity Equation]
+    By conservation of mass, i.e. $\int_{\Omega(t)} \rho(t, \mathbf{x}) d\mathbf{x} = C$, we have:
+    \begin{equation}
+        \begin{aligned}
+            \frac{d}{dt}\int_{\Omega(t)} \rho(t, \mathbf{x}) d\mathbf{x} &= \int_{\Omega(t)} \frac{\partial \rho}{\partial t} d\mathbf{x} + \int_{\partial \Omega(t)} \rho(t, \mathbf{x}) \mathbf{u} \cdot \mathbf{n} d S\\ 
+            &= \int_{\Omega(t)} \left(\frac{\partial \rho}{\partial t}  + \nabla\cdot \left(\rho\mathbf{u}\right)\right) d\mathbf{x}=0
+        \end{aligned}
+    \end{equation}
+    Therefore:
+    \begin{equation}
+        \frac{\partial \rho}{\partial t}  + \nabla\cdot \left(\rho\mathbf{u}\right) = 0
+    \end{equation}
+    which is also called \textbf{continuity equation}.
+\end{theorem}
+\begin{theorem}[Conservation of Momentum]
+    By conservation of momentum, i.e. 
+    \begin{equation}
+        \frac{d}{dt}\int_{\Omega(t)} \rho(t, \mathbf{x})\mathbf{v}(t, \mathbf{x}) d\mathbf{x} = -\int_{\partial \Omega(t)} p\cdot \mathbf{n} d S
+    \end{equation}
+    we have:
+    \begin{equation}
+        \frac{\partial (\rho \mathbf{v})}{\partial t} + \nabla\cdot \left(\rho \mathbf{v} \otimes \mathbf{v} + p\right) = 0
+    \end{equation}
+    where $p$ is the pressure.
+\end{theorem}
+\begin{theorem}[Conservation of Energy]
+    \begin{equation}
+        \frac{\partial E}{\partial t} + \nabla\cdot \left(\mathbf{v}(E + p)\right) = 0
+    \end{equation}
+\end{theorem}
+Then we have can get the Euler's equation:
+\begin{theorem}[Euler's Equation]
+    The Euler's equation is given by:
+    \begin{equation}
+        \frac{\partial}{\partial t}\begin{bmatrix}
+        \rho\\ \rho \mathbf{v}\\E
+    \end{bmatrix}
+    + \nabla\cdot \begin{bmatrix}
+        \rho \mathbf{v}\\ \rho \mathbf{v}\otimes \mathbf{v} + p\\ \mathbf{v}(E + p)
+    \end{bmatrix} = 0
+\end{equation}
+So the general form of conservation laws is given by: suppose $U\in \mathcal{R}^d$ is the conserved quantity, $F$ is $\mathcal{R}^d\to \mathcal{R}^d$ is the flux, 
+then we have:
+\begin{equation}
+    \frac{\partial U}{\partial t} + \nabla\cdot \left(F(U)\right) = 0
+\end{equation}
+
+\end{theorem}
+
