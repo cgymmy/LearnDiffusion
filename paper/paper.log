@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.12.1)  24 JAN 2025 14:00
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.12.1)  27 JAN 2025 17:53
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -624,35 +624,35 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 LaTeX Font Info:    Trying to load font information for U+rsfs on input line 64.
  (d:/texlive/2024/texmf-dist/tex/latex/jknapltx/ursfs.fd
 File: ursfs.fd 1998/03/24 rsfs font definition file (jk)
-) (./paper.toc)
+) (./paper.toc [1
+
+{d:/texlive/2024/texmf-var/fonts/map/pdftex/updmap/pdftex.map}])
 \tf@toc=\write5
 \openout5 = `paper.toc'.
 
- [1
-
-{d:/texlive/2024/texmf-var/fonts/map/pdftex/updmap/pdftex.map}] (./section/intro.tex [2]) (./section/fpk.tex [3] [4]
+ [2] (./section/intro.tex [3]) (./section/fpk.tex [4] [5]
 Overfull \hbox (11.01112pt too wide) in paragraph at lines 116--118
 [][]\OT1/cmr/m/it/10 The tran-si-tion den-sity $\OML/cmm/m/it/10 P[]\OT1/cmr/m/n/10 (\OML/cmm/m/it/10 x[]\OMS/cmsy/m/n/10 j\OML/cmm/m/it/10 x[]\OT1/cmr/m/n/10 )\OML/cmm/m/it/10 ; t \OMS/cmsy/m/n/10 ^^U
  []
 
-[5]) (./section/numeric.tex) (./section/sec2.tex [6] [7]) (./section/sec3.tex
-<./pics/VAE.png, id=325, 228.855pt x 88.07906pt>
+[6]) (./section/numeric.tex) (./section/diffusion.tex [7] [8]) (./section/sec3.tex
+<./pics/VAE.png, id=380, 228.855pt x 88.07906pt>
 File: ./pics/VAE.png Graphic file (type png)
 <use ./pics/VAE.png>
 Package pdftex.def Info: ./pics/VAE.png  used on input line 5.
 (pdftex.def)             Requested size: 241.84843pt x 93.08379pt.
- [8 <./pics/VAE.png>] [9] [10] [11]
-<./pics/score_based.png, id=402, 486.31688pt x 228.10219pt>
+ [9 <./pics/VAE.png>] [10] [11] [12]
+<./pics/score_based.png, id=457, 486.31688pt x 228.10219pt>
 File: ./pics/score_based.png Graphic file (type png)
 <use ./pics/score_based.png>
 Package pdftex.def Info: ./pics/score_based.png  used on input line 293.
 (pdftex.def)             Requested size: 386.95897pt x 181.50046pt.
- [12 <./pics/score_based.png>] [13] [14]) (./paper.bbl [15]
+ [13 <./pics/score_based.png>] [14] [15]) (./section/spde.tex [16] [17{d:/texlive/2024/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc}] [18]) [19] (./paper.bbl
 Underfull \hbox (badness 10000) in paragraph at lines 8--11
 []\OT1/cmr/m/n/10 Peter Hold-er-ri-eth.  The fokker-planck equa-tion and dif-fu-sion mod-els,, 2023.
  []
 
-) (./section/appendix.tex [16]) [17] 
+) (./section/appendix.tex [20] [21] [22]) [23] 
 enddocument/afterlastpage: lastpage setting LastPage.
 (./paper.aux)
  ***********
@@ -660,21 +660,21 @@ LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-02-20>
  ***********
 Package rerunfilecheck Info: File `paper.out' has not changed.
-(rerunfilecheck)             Checksum: 9FB2E2A93D35A0750AF81379DFAF301F;4578.
+(rerunfilecheck)             Checksum: D04B98817DD2EB10EF18D40F2F05F5C7;6179.
  ) 
 Here is how much of TeX's memory you used:
- 24093 strings out of 476023
- 436400 string characters out of 5791734
+ 24191 strings out of 476023
+ 437763 string characters out of 5791734
  1956190 words of memory out of 5000000
- 45558 multiletter control sequences out of 15000+600000
- 571380 words of font info for 87 fonts, out of 8000000 for 9000
+ 45579 multiletter control sequences out of 15000+600000
+ 571715 words of font info for 88 fonts, out of 8000000 for 9000
  36 hyphenation exceptions out of 8191
- 84i,13n,87p,444b,571s stack positions out of 10000i,1000n,20000p,200000b,200000s
-<d:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb><d:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb><d:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx9.pfb><d:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmbxti10.pfb><d:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb><d:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cmextra/cmex7.pfb><d:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb><d:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb><d:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb><d:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cmextra/cmmib7.pfb><d:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb><d:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb><d:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb><d:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb><d:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb><d:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb><d:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb><d:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy5.pfb><d:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb><d:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb><d:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/symbols/msam10.pfb><d:/texlive/2024/texmf-dist/fonts/type1/public/rsfs/rsfs10.pfb>
-Output written on paper.pdf (17 pages, 513994 bytes).
+ 84i,13n,87p,444b,696s stack positions out of 10000i,1000n,20000p,200000b,200000s
+<d:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb><d:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb><d:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx9.pfb><d:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmbxti10.pfb><d:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb><d:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cmextra/cmex7.pfb><d:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb><d:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb><d:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb><d:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cmextra/cmmib7.pfb><d:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb><d:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb><d:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb><d:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb><d:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb><d:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb><d:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb><d:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy5.pfb><d:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb><d:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb><d:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/symbols/msam10.pfb><d:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb><d:/texlive/2024/texmf-dist/fonts/type1/public/rsfs/rsfs10.pfb><d:/texlive/2024/texmf-dist/fonts/type1/public/cm-super/sfrm1000.pfb>
+Output written on paper.pdf (23 pages, 562171 bytes).
 PDF statistics:
- 631 PDF objects out of 1000 (max. 8388607)
- 558 compressed objects within 6 object streams
- 239 named destinations out of 1000 (max. 500000)
- 271 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 796 PDF objects out of 1000 (max. 8388607)
+ 711 compressed objects within 8 object streams
+ 311 named destinations out of 1000 (max. 500000)
+ 351 words of extra memory for PDF output out of 10000 (max. 10000000)
 

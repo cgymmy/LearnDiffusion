@@ -1,15 +1,17 @@
 # Fdb version 4
-["bibtex paper"] 1737698453.11929 "paper.aux" "paper.bbl" "paper" 1737698458.92056 0
+["bibtex paper"] 1737971455.77031 "paper.aux" "paper.bbl" "paper" 1737971618.24428 0
   "./reference.bib" 1735981226 6744 89d6f7fa80d0fd9def068674c3b64e1e ""
   "d:/texlive/2024/texmf-dist/bibtex/bst/base/plain.bst" 1733058262 20613 bd3fbfa9f64872b81ac57a0dd2ed855f ""
-  "paper.aux" 1737698456 5566 c3db018bf97443c003186f322eebedf8 "pdflatex"
+  "paper.aux" 1737971616 6871 184af74d487033d265aa3844b9e18393 "pdflatex"
   (generated)
   "paper.bbl"
   "paper.blg"
   (rewritten before read)
-["pdflatex"] 1737698454.11269 "d:/Research/github/LearnDiffusion/paper/paper.tex" "paper.pdf" "paper" 1737698458.92173 0
-  "d:/Research/github/LearnDiffusion/paper/paper.tex" 1737698443 3458 03ebadb259e4f09098b41ce3a336bb89 ""
+["pdflatex"] 1737971615.28694 "d:/Research/github/LearnDiffusion/paper/paper.tex" "paper.pdf" "paper" 1737971618.24502 0
+  "d:/Research/github/LearnDiffusion/paper/paper.tex" 1737971614 3493 c048d5a1b7017948f7dd11e7c1b81718 ""
+  "d:/texlive/2024/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc" 1733058349 2900 1537cc8184ad1792082cd229ecc269f4 ""
   "d:/texlive/2024/texmf-dist/fonts/map/fontname/texfonts.map" 1733058606 3524 cb3e574dea2d1052e39280babc910dc8 ""
+  "d:/texlive/2024/texmf-dist/fonts/tfm/jknappen/ec/tcrm1000.tfm" 1733058493 1536 e07581a4bb3136ece9eeb4c3ffab8233 ""
   "d:/texlive/2024/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmbsy5.tfm" 1733058174 1120 1e8878807317373affa7f7bba4cf2f6a ""
   "d:/texlive/2024/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmbsy7.tfm" 1733058174 1120 7f9f170e8aa57527ad6c49feafd45d54 ""
   "d:/texlive/2024/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm" 1733058174 1004 54797486969f23fa377b128694d548df ""
@@ -68,6 +70,8 @@
   "d:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cmextra/cmex7.pfb" 1733058174 30457 bc0868ebece724ed7c3d37e3d9bff7bd ""
   "d:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cmextra/cmmib7.pfb" 1733058174 39386 0d30f65251ad09eae5335149fa8e6f76 ""
   "d:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/symbols/msam10.pfb" 1733058174 31764 459c573c03a4949a528c2cc7f557e217 ""
+  "d:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb" 1733058174 34694 870c211f62cb72718a00e353f14f254d ""
+  "d:/texlive/2024/texmf-dist/fonts/type1/public/cm-super/sfrm1000.pfb" 1733058349 138258 6525c253f16cededa14c7fd0da7f67b2 ""
   "d:/texlive/2024/texmf-dist/fonts/type1/public/rsfs/rsfs10.pfb" 1733059354 16077 4737ac34f0fb5608550f3780a0202c22 ""
   "d:/texlive/2024/texmf-dist/tex/context/base/mkii/supp-pdf.mkii" 1733059018 71627 94eb9990bed73c364d7f53f960cc8c5b ""
   "d:/texlive/2024/texmf-dist/tex/generic/atbegshi/atbegshi.sty" 1733058201 24708 5584a51a7101caf7e6bbf1fc27d8f7b1 ""
@@ -205,19 +209,20 @@
   "d:/texlive/2024/texmf-var/fonts/map/pdftex/updmap/pdftex.map" 1733059852 5421091 287ecf793ecd0deda92deb72de2a5ec0 ""
   "d:/texlive/2024/texmf-var/web2c/pdftex/pdflatex.fmt" 1733060056 6862173 0da567ec12f498cd2af12c8ed049759d ""
   "d:/texlive/2024/texmf.cnf" 1733059827 713 e69b156964470283e0530f5060668171 ""
-  "paper.aux" 1737698456 5566 c3db018bf97443c003186f322eebedf8 "pdflatex"
-  "paper.bbl" 1737698454 1512 91b2c684f97f7dc9fe45d8f126728389 "bibtex paper"
-  "paper.out" 1737698456 4578 9fb2e2a93d35a0750af81379dfaf301f "pdflatex"
-  "paper.tex" 1737698443 3458 03ebadb259e4f09098b41ce3a336bb89 ""
-  "paper.toc" 1737698456 2582 b265cdd41a47d023ef046734eafafc0d "pdflatex"
+  "paper.aux" 1737971616 6871 184af74d487033d265aa3844b9e18393 "pdflatex"
+  "paper.bbl" 1737971456 1512 91b2c684f97f7dc9fe45d8f126728389 "bibtex paper"
+  "paper.out" 1737971616 6179 d04b98817dd2eb10ef18d40f2f05f5c7 "pdflatex"
+  "paper.tex" 1737971614 3493 c048d5a1b7017948f7dd11e7c1b81718 ""
+  "paper.toc" 1737971616 3436 6d964c341387bca8c135d167a80b6f3b "pdflatex"
   "pics/VAE.png" 1735902354 9193 1ea784e8d7b7f795730addb4b39320e9 ""
   "pics/score_based.png" 1735904185 165277 56d96acbe25b6b22b6b48faeab99f0d7 ""
-  "section/appendix.tex" 1737698443 4014 f60e92934875eb0089888b4f5f17dd64 ""
+  "section/appendix.tex" 1737971448 9267 89e1faafde49661fca728d303ba88452 ""
+  "section/diffusion.tex" 1737357296 7671 fb148c6a94c61cdf035410d49c127bb8 ""
   "section/fpk.tex" 1737357851 11108 7a15e978d907328ee56a99c21a71021e ""
   "section/intro.tex" 1737698443 5903 24190c6e14a6d271b7770a571ccc5ecd ""
   "section/numeric.tex" 1737357920 91 eb1ca3d754ca7488ae06e87cb3a5a400 ""
-  "section/sec2.tex" 1737357296 7671 fb148c6a94c61cdf035410d49c127bb8 ""
   "section/sec3.tex" 1737357354 26630 21a6b8f7bfa690e1b1ece4fd0079ba6b ""
+  "section/spde.tex" 1737971398 9884 3c96e39c7b079f4ac5f77b32f66b4cc7 ""
   (generated)
   "paper.aux"
   "paper.log"
