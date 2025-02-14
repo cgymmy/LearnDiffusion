@@ -2,7 +2,6 @@
 \appendix
 
 \section{Conservation Laws}
-\subsection{Flow Map}
 \begin{theorem}Two important theorems in calculus:
 
     1.\textbf{Divergence Theorem}:
@@ -27,7 +26,6 @@ Here the $\Omega(t)$ is the domain of the flow, and the $\partial \Omega(t)$ is 
         \end{aligned}\right.
     \end{equation}
 \end{definition}
-\subsubsection{Conservation Laws}
 If we assume $\Omega(t)$ is composed of particles, i.e. $\Omega(t)=\phi_{t_0}^t(\Omega)$(when $t = t_0$, $\Omega(t_0)=\Omega$), 
 then we by \textbf{conservation of mass}, we have the following theorem:
 \begin{theorem}[Continuity Equation]
@@ -76,6 +74,73 @@ then we have:
 \begin{equation}
     \frac{\partial U}{\partial t} + \nabla\cdot \left(F(U)\right) = 0
 \end{equation}
+
+\section{Linear Algebra}
+\begin{definition}[Matrix Kronecker Product]
+    Let $A\in \mathbb{R}^{m\times n}$ and $B\in \mathbb{R}^{p\times q}$ be two matrices. The Kronecker product of $A$ and $B$ is defined as:
+    \begin{equation}
+        A\otimes B = \begin{bmatrix}
+            a_{11}B & a_{12}B & \cdots & a_{1n}B\\
+            a_{21}B & a_{22}B & \cdots & a_{2n}B\\
+            \vdots & \vdots & \ddots & \vdots\\
+            a_{m1}B & a_{m2}B & \cdots & a_{mn}B
+        \end{bmatrix}
+    \end{equation}
+\end{definition}
+
+\begin{definition}[Fourier Matrix]
+    Let $n$ be a positive integer. The Fourier matrix $W_n$ is defined as:
+    \begin{equation}
+        W_n = \frac{1}{\sqrt{n}}\begin{bmatrix}
+            1 & 1 & \cdots & 1\\
+            1 & w & \cdots & w^{n-1}\\
+            \vdots & \vdots & \ddots & \vdots\\
+            1 & w^{n-1} & \cdots & 1
+        \end{bmatrix}
+    \end{equation}
+\end{definition}
+
+\begin{definition}[Two dimensional Fourier Matrix]
+    Let $W_1, W_2$ be $n_1\times n_1$ and $n_2\times n_2$ Fourier matrices respectively. 
+    Then the two dimensional Fourier matrix is defined as:
+    \begin{equation}
+        W = W_2\otimes W_1
+    \end{equation}
+    which is the $n_1n_2\times n_1n_2$ matrix.
+\end{definition}
+
+\begin{theorem}[Two-dimensional DFT]
+    The two-dimentional DFT of $V\in \mathbb{C}^{n_1\times n_2}$ is $\hat{V}\in \mathbb{C}^{n_1\times n_2}$ whose elements are given by:
+    \begin{equation}
+        \hat{V}_{ij} = \sum_{k=0}^{n_1-1}\left(\sum_{l=0}^{n_2-1}V_{kl}w_1^{ik}\right)w_2^{jl}, w_1 = e^{-\frac{2\pi i}{n_1}}, w_2 = e^{-\frac{2\pi i}{n_2}}
+    \end{equation}
+    where $i = 0, \cdots, n_1 - 1, j = 0, \cdots, n_2-1$. 
+    \begin{equation}
+        \hat{V} = \sqrt{n_1n_2}\operatorname{array}\left((W_2\otimes W_1)\tilde{v}\right),\ \tilde{v} = vec(V)
+    \end{equation}
+    Do DFT on column and row respectively.
+\end{theorem}
+
+\begin{theorem}[Two-dimensional IDFT]
+    The two-dimentional IDFT of $\hat{V}\in \mathbb{C}^{n_1\times n_2}$ is $V\in \mathbb{C}^{n_1\times n_2}$ whose elements are given by:
+    \begin{equation}
+        V_{kl} = \frac{1}{n_1n_2}\sum_{i=0}^{n_1-1}\sum_{j=0}^{n_2-1}\hat{V}_{ij}w_1^{-ik}w_2^{-jl}, w_1 = e^{\frac{2\pi i}{n_1}}, w_2 = e^{\frac{2\pi i}{n_2}}
+    \end{equation}
+    where $k = 0, \cdots, n_1-1, l = 0, \cdots, n_2-1$. 
+    \begin{equation}
+        V = \frac{1}{\sqrt{n_1n_2}}\operatorname{array}\left((W_2\otimes W_1)^*\hat{v}\right),\ \hat{v} = vec(\hat{V})
+    \end{equation}
+    Do IDFT on column and row respectively.
+\end{theorem}
+
+\begin{theorem}[Fourier representation of BCCB matrix]
+    Let $C\in \mathbb{R}^{n_1\times n_2}$ be a BCCB matrix, then $C = WDW^*$, where $W$ is the two-dimensional Fourier matrix, 
+    and $D$ is a diagonal matrix with diagonal $d = vec(\Lambda)$, where
+    \begin{equation}
+        \Lambda = \sqrt{n_1n_2}\operatorname{array}\left((W)^*c_{red}\right),\ c_{red}=\operatorname{vec}(C_{red})
+    \end{equation}
+    
+\end{theorem}
 
 \section{Priori}
 \subsection{Hilbert space-valued random variable}
