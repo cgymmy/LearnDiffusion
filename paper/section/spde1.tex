@@ -143,7 +143,7 @@ Then $u_{hk}$ can be written as:
     The Galerkin solution can be rewritten as:
     \begin{equation}
         \begin{aligned}
-            u_{hk}(x, \xi) &=\sum_{i=1}^{J}\left(\sum_{j=1}^{Q}u_{ij}\phi_i(x)\right)\psi_j(\xi)+w_g\\
+            u_{hk}(x, \xi) &=\sum_{j=1}^{Q}\left(\sum_{i=1}^{J}u_{ij}\phi_i(x)\right)\psi_j(\xi)+w_g\\
             &=\sum_{j=1}^{Q}u_j\psi_j(\xi)+w_g\\
             &= (u_1(x)+w_g(x))\psi_1(\xi) + \sum_{j=2}^{Q}u_j(x)\psi_j(\xi)\\
         \end{aligned}
@@ -182,10 +182,34 @@ where
 \begin{equation}
     \mathbf{u}_j = [u_{1j}, u_{2j}, \cdots, u_{Jj}]^T, j=1,2,\cdots, Q
 \end{equation}
-and each submatrix $A_{sj}$ is a $J\times J$ matrix:
+and each submatrix $A_{ij}$ is a $J\times J$ matrix, $i,j=1,2,\cdots, Q$:
 \begin{equation}
-    A_{sj} = \langle \phi_r, \frac{\partial \psi_s}{\partial x}\rangle_{L^2(D)}
+    A_{ij} = K_0\langle \psi_i, \psi_j\rangle_p + \sum_{l=1}^{P}K_l\langle \psi_i, \psi_j\xi_l\rangle_p
 \end{equation}
+where
+\begin{equation}\left\{
+    \begin{aligned}
+        \left[K_0\right]_{rs} &= \int_D \mu_a(x)\nabla\phi_r\cdot \nabla\phi_sdx\\
+        \left[K_l\right]_{rs} &= \int_D (\sqrt{v_l^a}\phi_l^a)\nabla\phi_r\cdot \nabla\phi_sdx
+    \end{aligned}\right., \qquad r,s=1,2,\cdots, J
+\end{equation}
+
+And $\mathbf{b}_s$ is a $J\times 1$ vector:
+\begin{equation}
+    \mathbf{b}_s = \langle \psi_1, \psi_s\rangle_pF_0 + \sum_{l=1}^{P}F_l\langle \xi_l, \psi_s\rangle_p - \langle W, \psi_s\rangle_p
+\end{equation}
+where
+\begin{equation}\left\{
+    \begin{aligned}
+        \left[F_0\right]_{i} &= \int_D \mu_f(x)\phi_i(x)dx\\
+        \left[F_l\right]_{i} &= \int_D (\sqrt{v_l^f}\phi_l^f)\phi_i(x)dx\\
+        W &= K^T_{0B}\mathbf{w}_B+\sum_{l=1}^{P}K^T_{lB}\xi_l\mathbf{w}_B
+    \end{aligned}\right.
+\end{equation}
+
+
+
+
 
 
 

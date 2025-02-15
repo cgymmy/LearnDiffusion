@@ -1,5 +1,25 @@
 \newpage
 \appendix
+\section{Probability Theory}
+We have known the definition of semigroup and generator of Markov process.
+
+We consider a Markov process $X_t$ in $\mathbb{R}^d$ with generator $\mathcal{L}$ and Markov semigroup $P_t$.
+\begin{definition}[Ergodic Markov Chain]
+    We say $X_t$ is ergodic provided that the generator operator $\mathcal{L}$ has only constant solutions. Or equivalently, the Markov semigroup $P_t$ has a unique invariant distribution $\pi$.
+    $P_tg = g$ has only constant solutions.
+\end{definition}
+
+The invariant measure (distribution) governs the long-time dynamics of the Markov process. 
+In particular, when $X_0\sim \mu_0$ initially, we have:
+\begin{equation}
+    \lim_{t\to \infty} P^*_t\mu_0 = \mu
+\end{equation}
+Furthermore, 
+\begin{equation}
+    \lim_{t\to \infty} \frac{1}{t}\int_0^t f(X_s)ds = \int_{\mathbb{R}^d} f(x)\mu(dx)
+\end{equation}
+
+
 
 \section{Conservation Laws}
 \begin{theorem}Two important theorems in calculus:

@@ -1,5 +1,5 @@
-\section{Variational Auto-Encoder}
-\subsection{Structure}
+\section{Generative Model}
+\subsection{Variational Auto-Encoder}
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.5\textwidth]{./pics/VAE.png} % 图片路径和大小
@@ -10,7 +10,6 @@ And $p_{\boldsymbol{\theta}}(\mathbf{x} \mid \mathbf{z})$ is the proxy for  $p(\
 Like the encoder, the decoder can be parameterized by a deep neural network. 
 
 If we treat $\phi$ and $\theta$ as optimization variables, then we need an objective function (or the loss function) so that we can optimize $\phi$ and $\theta$ through training samples.
-\subsection{Evidence Lower Bound}
 \begin{definition}[Evidence Lower Bound]
     The Evidence Lower Bound (ELBO) is defined as:
     \begin{equation}
@@ -67,9 +66,8 @@ If we treat $\phi$ and $\theta$ as optimization variables, then we need an objec
     \end{equation}
     where $X$ is the training set.
 \end{definition}
-\section{Diffusion Model}
-
-\subsection{DDPM}
+\subsection{Diffusion Model}
+\paragraph{DDPM}
 DDPM is like splitting the encoder and decoder of VAE into controllable parts. 
 For each training data point $x_0\sim p_{data}$, then a discrete Markov chain $\{x_1, \cdots, x_N\}$ is constructed by transition function:
 \begin{equation}
@@ -154,10 +152,10 @@ then
 \end{equation}
 
 We have the following theorem which is crucial for diffusion models. Usually, we assume $Q=I_m$.
-\begin{theorem}\label{thm1}
+\begin{theorem}
     If  $X_{t+s}=(1+a(t) s) X_{t}+b(t) s+g(t) \sqrt{s} \xi$\\
     then $X_{t} | X_{0} \sim N\left(E\left[X_{t} | X_{0}\right], \operatorname{Var}\left(X_{t} | X_{0}\right)\right)$, 
-    where $E\left[X_{t} | X_{0}\right]=e(t), \operatorname{Var}\left(X_{t} | X_{0}\right)=V(t)$.        
+    where $E\left[X_{t} | X_{0}\right]=e(t), \operatorname{Var}\left(X_{t} | X_{0}\right)=V(t)$.\label{thm1}        
 \end{theorem}
 
 It should be noted that $e(t)$ is related to $X_0$ and t, while $V(t)$ only depends on $t$!
@@ -167,7 +165,7 @@ Next, we will see how the above formula can be applied to diffusion modtels. The
     Noise function  $\beta(t)$ . s.t. $\beta(0)=0 ; \beta^{\prime}(t) \geqslant 0 ; \beta(t) \rightarrow \infty \text { as } t \rightarrow \infty$
 \end{definition}
 
-\subsubsection*{Variance Preserving (VP) SDE}
+\textbf{Variance Preserving (VP) SDE}
 So if we have diffusion model like:
 \begin{equation}
 \begin{aligned}
@@ -192,7 +190,7 @@ Then the model can be written as
 $d x=-\frac{x}{2} \beta^{\prime}(t) d t+\sqrt{\beta^{\prime}(t)} d W_{t}$
 
 
-Then by Theorem \ref{thm1} we have
+Then we have
 \begin{equation}
     \left\{\begin{aligned}
     &E\left[X_{t} | X_{0}\right]=X_{0} e^{\int_{0}^{t}-\frac{1}{2} \beta'(s) d s}=X_{0} e^{-\frac{1}{2} \beta(t)} \\
@@ -204,7 +202,7 @@ Then by Theorem \ref{thm1} we have
 So as  $t \rightarrow \infty,\beta(t) \rightarrow \infty$, then  $E \rightarrow 0, V \rightarrow 1$, i.e. 
 $X_{t} | X_{0} \sim N\left(E\left[X_{t} | X_{0}\right], \operatorname{Var}\left|X_{t}\right| X_{0}\right)\rightarrow N(0,1) \text{ as } t \rightarrow \infty$.
  
-\subsubsection*{Variance-Exploding SDE}
+\textbf{Variance-Exploding SDE}
 Here is the model: 
 $X_{t+h}=X_{t}+\sqrt{\Delta \beta(t)} \xi$
 
@@ -222,7 +220,7 @@ Hence
 So the expectation value is constant and the variance is increasing monotonical. \\
 If we rescale  $X_{t}$ as $Y_{t}=\frac{X_{t}}{\sqrt{\beta(t)}}$, then $Y_t \rightarrow N(0,1), t \rightarrow \infty$.
 
-\subsubsection*{Sub-VP SPE}
+\textbf{Sub-VP SDE}
 Here, we set the dift and diffusion term as
 \begin{equation}
 \begin{aligned}
@@ -297,7 +295,8 @@ Step3. Sample $X_T$ from $N(0, 1)$, then run reverse SDE from T to 0:
 
 \subsection{Score Matching}
 The most difficult question on how to obtian $\nabla_x \log p(x)$ because it solves FPK equation.
-\subsubsection{Explicit Score Matching}
+
+\textbf{subsubsection}{Explicit Score Matching}
 Suppose we have a set of samples $x_1, x_2, \cdots, x_n$ from the data distribution $p_{data}(x)$. 
 A classical way is to consider the kernel density estimation $q(x)$ of $p(x)$:
 \begin{equation}
@@ -314,8 +313,10 @@ We can define a loss function to train a network:
     \end{aligned}
 \end{equation}
 However, when the number of samples is limited, the estimation $\nabla_x \log q(x)$ is not accurate.
-\subsubsection{Implicit Score Matching}
-\subsubsection{Denoising Score Matching}
+
+\textbf{Implicit Score Matching}
+
+\textbf{Denoising Score Matching}
 Normally we can define the loss function as follows:
 \begin{equation}
     \begin{aligned}
@@ -417,8 +418,7 @@ Then
 \end{equation}
 Hence we only need one conditional denoising network, and using null condition to represent the unconditional model.
 
-\section{Flow Matching}
-\subsection{FPK Equation}
+\subsection{Flow Matching}
 We have discussed the FPK Equation in 'learnsde'. 
 \begin{theorem}[Fokken-Planck-Kolmogorov equation]
     The density function $p(x, t)$ of $X_t$ s.t. 
@@ -455,7 +455,7 @@ So if we set $F(z, t)=f(z, t) - \frac{1}{2}M(t)\nabla\log p(z, t)$, then $p(z, t
 So theoretically, we can do the diffusion like reverse ode!
 
 This is the topic discussed in 'Probability Flow'.
-\subsection{Probability Flow}
+
 Define a flow $\phi: \mathcal{R}^d\times [0, 1]\rightarrow \mathcal{R}^d$ is a flow generated by a vector field $v: \mathcal{R}^d \times [0, 1]\rightarrow \mathcal{R}^d$ i.e.
 \begin{equation}\left\{
     \begin{aligned}

@@ -13,7 +13,7 @@
 \usepackage{float}
 \usepackage{subcaption} 
 \usepackage{mathrsfs}
-\bibliographystyle{plain}
+\bibliographystyle{unsrt}
 
 
 
@@ -33,7 +33,8 @@
     colorlinks=true,                                            %链接将会有颜色，默认是红色
     linkcolor=red,                                             %内部链接，那些由交叉引用生成的链接将会变为蓝色（blue）
     filecolor=red,                                          %链接到本地文件的链接将会变为洋红色（magenta）
-    urlcolor=red,                                              %链接到网站的链接将会变为蓝绿色（cyan）
+    urlcolor=red,      
+    citecolor=black                                       
 }
 
 \lstset{  
@@ -63,22 +64,24 @@
 \maketitle
 \begin{abstract}
     This paper is about the basic theory and applications of SDEs. Also, this is a sum up of last term's SDE course. Reference: \cite{song2021scorebasedgenerativemodelingstochastic}\cite{chan2024tutorialdiffusionmodelsimaging}\cite{citeulike:1220946}
-    \cite{lipman2024flowmatchingguidecode}\cite{lord2014introduction}\cite{Särkkä_Solin_2019}\cite{holderrieth2023fokker}
+    \cite{lipman2024flowmatchingguidecode}\cite{lord2014introduction}\cite{Särkkä_Solin_2019}\cite{holderrieth2023fokker} \cite{doi:10.1137/1.9780898718997}
     
 \end{abstract}
 \tableofcontents
 \newpage
-% \input{section/intro}
-% \input{section/fpk}
+\input{section/intro}
+\input{section/fpk}
 % \input{section/numeric}
-% \input{section/diffusion}
-% \input{section/sec3}
+\input{section/diffusion}
+\input{section/reversible}
+\input{section/generative}
 \input{section/randomfield}
 \input{section/spde1}
 \input{section/spde2}
 
 \newpage
+
 \bibliography{reference}
 
-% \input{section/appendix}
+\input{section/appendix}
 \end{document} 

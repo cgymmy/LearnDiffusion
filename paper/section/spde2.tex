@@ -1,5 +1,5 @@
 \section{Semilinear Stochastic PDEs}
-\subsection{Semilinear SPDE}
+\subsection{Definition}
 Then we come to the time-dependent SPDE. We study the stochastic semilinear evolution equation:
 \begin{equation}
     du = [\Delta u + f(u)]dt + G(u)dW(t, x)
@@ -30,7 +30,7 @@ where $-A$ is a linear operator that generates a semigroup $S(t)=e^{-tA}$.
 
 So like we deal with integration of stochastic process like Itos or stratonovich, we need to generalize the Brownian Motion by introducing spatial variable to W(t). 
 Here we define Q-Wiener Process. 
-\subsection{Q wiener process}
+
 First, we assume $U$ is a Hilbert space. And $(\Omega, \mathbf{F}, \mathbf{F}_t, \mathbb{R})$ is a filtered probability space. 
 \begin{definition}[Q]\label{Q}
     $Q \in \mathcal{L}(U)$ is non-negative definite and symmetric. 
@@ -65,8 +65,6 @@ First, we assume $U$ is a Hilbert space. And $(\Omega, \mathbf{F}, \mathbf{F}_t,
 \end{theorem}
 
 So, in place of $L^2(D)$, we develop the theory on a separable Hilbert space U with norm $\|\cdot\|_U$ and inner product $\langle \cdot, \cdot\rangle _U$ and define the Q-Wiener process ${W (t) : t \geq 0}$ as a U-valued process. 
-
-\subsection{Cylindrical Wiener Process}
 
 We mention the important case of Q = I, which is not trace class on an infinite-dimensional space U (as $q_j = 1$ for all j) so that the series does not converge in $L^2(\Omega,U)$ . To extend the definition of a Q-Wiener process, we introduce the cylindrical Wiener process.
 
@@ -112,7 +110,7 @@ So, we can have the truncated form:
 \end{definition}
 
 
-\subsection{Semilinear SPDE}
+\subsection{Solution}
 Consider the semilinear SPDE:
 \begin{equation}
     du = [-Au+f(u)]dt + G(u)dW(t)
